@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nikhil Portfolio</title>
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+  <!-- AOS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/aos@next/dist/aos.css"
+  />
+  <!-- Your main stylesheet -->
+  
+
+  <!-- Inline additions: particles & chatbot z-index -->
+   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* tsParticles full-screen behind content */
+    
+    #tsparticles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background: #000;
+    }
+    /* Ensure your sections stay above the canvas */
+    nav, .dropdown,
+    section, .main-container,
+    .about-container, .skills-container,
+    .projects-container, .services-container,
+    .contact-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Chatbot pin & window */
+    .chatbot-btn {
+      position: fixed !important;
+      bottom: 20px; right: 20px;
+      width: 50px; height: 50px;
+      background: var(--accent, #ff4e50);
+      color: #fff; font-size: 1.5rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 9999;
+    }
+    .chatbot-window {
+      position: fixed !important;
+      bottom: 80px; right: 20px;
+      width: 300px; max-height: 400px;
+      background: #fff; color: #111;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border-radius: 8px; display: none !important;
+      flex-direction: column; overflow: hidden;
+      z-index: 9999;
+    }
+    .chatbot-window.open {
+      display: flex !important;
+    }
+    .chatbot-header {
+      background: var(--accent, #ff4e50);
+      color: #fff; padding: 0.5rem;
+      font-weight: bold; display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .chatbot-close { cursor: pointer; }
+    .chatbot-body {
+      flex: 1; padding: 0.5rem;
+      overflow-y: auto; font-size: 0.9rem;
+    }
+    .chatbot-body .message { margin: 0.5rem 0; }
+    .chatbot-body .user { text-align: right; }
+    .chatbot-body .bot { text-align: left; }
+    .chatbot-footer {
+      display: flex; border-top: 1px solid #ddd;
+    }
+    #chat-input {
+      flex: 1; border: none; padding: 0.5rem;
+    }
+    #chat-send {
+      border: none;
+      background: var(--accent, #ff4e50);
+      color: #fff;
+      padding: 0 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- tsParticles canvas -->
+  <div id="tsparticles"></div>
+
+  <nav>
+    <div class="nav-container">
+      <div class="logo" data-aos="zoom-in" data-aos-duration="1500">
+        Kollipakula <span>Nikhil</span>
+      </div>
+      <div class="links">
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
+          <a href="#home">Home</a>
+        </div>
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="200">
+          <a href="#about">About</a>
+        </div>
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="300">
+          <a href="#skills">Skills</a>
+        </div>
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="400">
+          <a href="#projects">Projects</a>
+        </div>
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="400">
+          <a href="#services">Services</a>
+        </div>
+        <div class="link" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="500">
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <i class="fa-solid fa-bars hamburg" onclick="hamburg()"></i>
+    </div>
+    <div class="dropdown">
+      <div class="links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+        <i class="fa-solid fa-xmark cancel" onclick="cancel()"></i>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home">
+    <div class="main-container">
+      <div class="image" data-aos="zoom-out" data-aos-duration="3000">
+        <img src="nikhil.jpg" alt="Profile Picture">
+      </div>
+      <div class="content">
+        <h1 data-aos="fade-left" data-aos-duration="1500" data-aos-delay="700">
+          Hey I'm <span>Nikhil</span>
+        </h1>
+        <div class="typewriter" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="900">
+          I'm a <span class="typewriter-text"></span>
+        </div>
+        <p data-aos="fade-right" data-aos-duration="1500" data-aos-delay="1100">
+          I'm Nikhil, a passionate AI engineer with a strong foundation in machine learning, deep learning, and data-driven development. I specialize in building intelligent systems that solve real-world problems—ranging from natural language processing to computer vision—while ensuring performance, scalability, and ethical AI practices.
+        </p>
+        <div class="social-links">
+          <a href="https://github.com/KollipakulaNikhil" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="1300">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://www.instagram.com/__nik.hil__21/"  data-aos="fade-up" data-aos-duration="1500" data-aos-delay="1400">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://www.facebook.com/"  data-aos="fade-up" data-aos-duration="1500" data-aos-delay="1500">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/kollipakulanikhil/" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="1600">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
+        </div>
+        <div class="btn" data-aos="zoom-in" data-aos-duration="1500" data-aos-delay="1800">
+          <button>Hire me</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="about-container">
+      <h2 class="section-title" data-aos="fade-down" data-aos-duration="1500">About Me</h2>
+      <div class="about-content">
+        <div class="about-text" data-aos="fade-right" data-aos-duration="1500">
+          <h3>AI Engineer</h3>
+          <p>As an aspiring AI/ML engineering student… drive innovation.</p>
+          <div class="about-info">
+            <div class="info-item"><span>Name:</span> Kollipakula Nikhil</div>
+            <div class="info-item"><span>Email:</span> kollipakulanikhil21@gmail.com</div>
+            <div class="info-item"><span>Location:</span> Vijayawada</div>
+            <div class="info-item"><span>Status:</span> Open To Work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="section">
+    <div class="skills-container">
+      <h2 class="section-title" data-aos="fade-down" data-aos-duration="1500">My Skills</h2>
+      <div class="skills-content">
+        <div class="skill-category" data-aos="fade-up" data-aos-duration="1500">
+          <h3>Frontend Development</h3>
+          <div class="skill-items">
+            <div class="skill-item">
+              <span>HTML</span>
+              <div class="progress-bar"><div class="progress" style="width: 90%"></div></div>
+            </div>
+            <div class="skill-item">
+              <span>CSS</span>
+              <div class="progress-bar"><div class="progress" style="width: 85%"></div></div>
+            </div>
+            <div class="skill-item">
+              <span>JavaScript</span>
+              <div class="progress-bar"><div class="progress" style="width: 80%"></div></div>
+            </div>
+            <div class="skill-item">
+              <span>Python</span>
+              <div class="progress-bar"><div class="progress" style="width: 95%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- PROJECTS SECTION -->
+  <section id="projects" class="section">
+    <div class="projects-container">
+        <h2 class="section-title" data-aos="fade-down" data-aos-duration="1500">My Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card" data-aos="fade-up" data-aos-duration="1500">
+                <div class="project-img">
+                    <img src="voice.png" alt="Project-1">
+                </div>
+                <div class="project-content">
+                    <h3>AI Text To Text-To-Voice-AI-Generator</h3>
+                    <p>An AI-powered text-to-voice generator that converts written content into natural-sounding speech using advanced machine learning models. Perfect for voiceovers, accessibility, and content creation.</p>
+                    <div class="project-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>Python</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://kollipakulanikhil.github.io/Text-To-Voice-AI-Generator/"><i class="fas fa-link"></i> Live Demo</a>
+                        <a href="https://github.com/KollipakulaNikhil/Text-To-Voice-AI-Generator"><i class="fab fa-github"></i> Source Code</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="200">
+                <div class="project-img">
+                    <img src="moon.png" alt="Project-2">
+                </div>
+                <div class="project-content">
+                    <h3>Moon moon-phase-tracker</h3>
+                    <p>A dynamic moon phase tracker that calculates and displays the current phase of the moon using precise astronomical data. Ideal for astronomy enthusiasts and lunar calendar apps.</p>
+                    <div class="project-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>Python</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://kollipakulanikhil.github.io/moon-phase-tracker/"><i class="fas fa-link"></i> Live Demo</a>
+                        <a href="https://github.com/KollipakulaNikhil/moon-phase-tracker"><i class="fab fa-github"></i> Source Code</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="400">
+                <div class="project-img">
+                    <img src="music.png" alt="Project 3">
+                </div>
+                <div class="project-content">
+                    <h3>Music Library</h3>
+                    <p>A smart music library organizer that efficiently manages, categorizes, and retrieves songs using advanced data structures. Perfect for music enthusiasts and playlist curation.</p>
+                    <div class="project-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        
+                    </div>
+                    <div class="project-links">
+                        <a href="https://kollipakulanikhil.github.io/Music-Library/"><i class="fas fa-link"></i> Live Demo</a>
+                        <a href="https://github.com/KollipakulaNikhil/Music-Library"><i class="fab fa-github"></i> Source Code</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ... existing code ... -->
+
+    <section id="services" class="section">
+        <div class="services-container">
+            <h2 class="section-title" data-aos="fade-down" data-aos-duration="1500">My Services</h2>
+            <div class="services-grid">
+                <div class="service-card" data-aos="fade-up" data-aos-duration="1500">
+                    <i class="fas fa-code"></i>
+                    <h3>Web Development</h3>
+                    <p>Custom website development with clean and efficient code.</p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="200">
+                    <i class="fas fa-palette"></i>
+                    <h3>Web Design</h3>
+                    <p>Creative and responsive design solutions for modern websites.</p>
+                </div>
+                <div class="service-card" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="400">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Responsive Design</h3>
+                    <p>Mobile-friendly websites that work on all devices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="contact-container">
+            <h2 class="section-title" data-aos="fade-down" data-aos-duration="1500">Contact Me</h2>
+            <div class="contact-content">
+                <div class="contact-info" data-aos="fade-right" data-aos-duration="1500">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>kollipakulanikhil21@gmail.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+91 9381675512</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-location-dot"></i>
+                        <h3>Location</h3>
+                        <p>Vijayawada</p>
+                    </div>
+                </div>
+                <form class="contact-form" data-aos="fade-left" data-aos-duration="1500">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+  
+
+  <!-- … projects, services, contact sections unchanged … -->
+
+  <!-- Global Chatbot markup (outside all sections!) -->
+  <div class="chatbot-btn">💬</div>
+  <div class="chatbot-window">
+    <div class="chatbot-header">
+      Chat with me
+      <span class="chatbot-close">&times;</span>
+    </div>
+    <div class="chatbot-body"></div>
+    <div class="chatbot-footer">
+      <input type="text" id="chat-input" placeholder="Type a message…" />
+      <button id="chat-send">Send</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.1.0/typed.umd.js"></script>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+
+  <script>
+    // AOS init
+    AOS.init({ offset: 0, duration: 800, once: true });
+
+    // tsParticles init
+    (async () => {
+      const container = await tsParticles.load("tsparticles", {
+        fpsLimit: 60,
+        particles: {
+          number: { value: 80, density: { enable: true, area: 800 } },
+          color: { value: "#8fa" },
+          links: { enable: true, distance: 120, opacity: 0.15 },
+          move: { enable: true, speed: 0.8, outModes: "bounce" },
+          size: { value: { min: 1, max: 4 } }
+        },
+        interactivity: {
+          events: {
+            onHover: { enable: true, mode: "repulse" },
+            onClick: { enable: false }
+          }
+        },
+        detectRetina: true,
+      });
+      const canvas = container.canvas.element;
+      canvas.style.pointerEvents = "auto";
+      canvas.addEventListener("click", e => {
+        const rect = canvas.getBoundingClientRect();
+        const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        if (container.particles.quadTree.queryCircle(pos, 5).length) {
+          prompt("👋 Hey there! What would you like to know?");
+        }
+      });
+    })();
+
+    // Chatbot UI logic
+    const chatBtn   = document.querySelector(".chatbot-btn");
+    const chatWin   = document.querySelector(".chatbot-window");
+    const chatClose = document.querySelector(".chatbot-close");
+    const chatBody  = document.querySelector(".chatbot-body");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend  = document.getElementById("chat-send");
+
+    chatBtn.addEventListener("click", () => chatWin.classList.toggle("open"));
+    chatClose.addEventListener("click", () => chatWin.classList.remove("open"));
+
+    function addMessage(text, cls) {
+      const div = document.createElement("div");
+      div.classList.add("message", cls);
+      div.textContent = text;
+      chatBody.append(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      addMessage(msg, "user");
+      chatInput.value = "";
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+        const { response } = await res.json();
+        addMessage(response, "bot");
+      } catch {
+        addMessage("Error contacting server.", "bot");
+      }
+    }
+
+    chatSend.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
