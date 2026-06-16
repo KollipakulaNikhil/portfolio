@@ -1,610 +1,1298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Gen-AI developer portfolio with a Steam inspired 3D interface." />
-    <title>Kollipakula Nikhil | Gen-AI 3D Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Sora:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <canvas id="bg" aria-hidden="true"></canvas>
-    <div class="backdrop" aria-hidden="true">
-      <div class="aurora"></div>
-      <div class="beam beam-a"></div>
-      <div class="beam beam-b"></div>
-      <div class="grid-plane"></div>
-      <div class="ring ring-a"></div>
-      <div class="ring ring-b"></div>
-      <div class="ring ring-c"></div>
-      <div class="noise"></div>
-    </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kollipakula Nikhil — AI & Fullstack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#030712;--surface:#0f172a;--surface2:#1e293b;
+  --cyan:#06b6d4;--cyan-glow:rgba(6,182,212,.3);
+  --violet:#8b5cf6;--violet-glow:rgba(139,92,246,.3);
+  --emerald:#10b981;--text:#f8fafc;--muted:#94a3b8;
+  --border:rgba(255,255,255,.07);
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
 
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-logo">NK</div>
-        <div>
-          <div class="brand-title">Kollipakula Nikhil</div>
-          <div class="brand-sub">Gen-AI Developer</div>
+/* ══ INTRO ══ */
+#intro{position:fixed;inset:0;z-index:10000;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#intro::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:2}
+#i-rain{position:absolute;inset:0;opacity:.38}
+#i-body{position:relative;z-index:3;text-align:center;padding:2rem}
+.i-tag{font-family:var(--mono);font-size:.68rem;color:var(--cyan);letter-spacing:.4em;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:iFU .5s ease .3s forwards}
+.i-logo{font-size:clamp(4.5rem,13vw,10rem);font-weight:700;color:#fff;line-height:1;position:relative;display:inline-block;opacity:0;animation:iFU .6s ease .7s forwards;letter-spacing:.04em}
+.i-logo::before,.i-logo::after{content:attr(data-text);position:absolute;inset:0;opacity:.85}
+.i-logo::before{color:var(--cyan);animation:iG1 2.8s ease-in-out 1.3s infinite;clip-path:polygon(0 0,100% 0,100% 38%,0 38%);transform:translateX(-3px)}
+.i-logo::after{color:var(--violet);animation:iG2 2.8s ease-in-out 1.3s infinite;clip-path:polygon(0 62%,100% 62%,100% 100%,0 100%);transform:translateX(3px)}
+@keyframes iG1{0%,90%,100%{transform:translateX(-3px);opacity:.85}91%{transform:translateX(6px) skewX(5deg);opacity:1}94%{transform:translateX(-4px)}97%{transform:translateX(2px);opacity:.9}}
+@keyframes iG2{0%,90%,100%{transform:translateX(3px);opacity:.85}91%{transform:translateX(-6px) skewX(-5deg);opacity:1}94%{transform:translateX(4px)}97%{transform:translateX(-2px);opacity:.9}}
+.i-name{font-family:var(--mono);font-size:clamp(.62rem,1.5vw,.88rem);color:var(--violet);letter-spacing:.28em;text-transform:uppercase;margin-top:.55rem;opacity:0;animation:iFU .5s ease 1.1s forwards}
+.i-bar-wrap{width:min(360px,78vw);margin:2.2rem auto .5rem;opacity:0;animation:iFU .5s ease 1.4s forwards}
+.i-bar-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:.4rem}
+.i-track{height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+#i-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--violet));box-shadow:0 0 12px var(--cyan);transition:width .04s linear}
+#i-status{font-family:var(--mono);font-size:.66rem;color:var(--cyan);letter-spacing:.16em;text-align:center;margin-top:.5rem;min-height:1.1em;opacity:0;animation:iFU .5s ease 1.4s forwards}
+#i-skip{position:absolute;bottom:1.6rem;right:2rem;font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.18em;cursor:pointer;border:1px solid rgba(255,255,255,.1);padding:.32rem .85rem;border-radius:4px;z-index:4;transition:all .2s;opacity:0;animation:iFU .4s ease 1.9s forwards}
+#i-skip:hover{color:var(--cyan);border-color:var(--cyan)}
+@keyframes iFU{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+#intro.exit{animation:iOut .75s ease forwards;pointer-events:none}
+@keyframes iOut{0%{opacity:1;transform:scale(1)}45%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.08)}}
+
+/* ══ CURSOR ══ */
+#cur{position:fixed;width:10px;height:10px;background:var(--cyan);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 15px var(--cyan);transition:width .15s,height .15s}
+#cur-ring{position:fixed;width:38px;height:38px;border:1px solid var(--cyan);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;transition:width .3s,height .3s}
+body.ch #cur{width:18px;height:18px}
+body.ch #cur-ring{width:56px;height:56px;border-color:var(--violet)}
+
+/* ══ CANVASES ══ */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#click-canvas{position:fixed;inset:0;pointer-events:none;z-index:9990}
+
+/* ══ SCROLL BAR ══ */
+#scroll-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--cyan),var(--violet));z-index:1001;box-shadow:0 0 8px var(--cyan);transition:width .1s}
+
+/* ══ DOT NAV ══ */
+#dot-nav{position:fixed;right:1.3rem;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:.65rem}
+.dn{width:8px;height:8px;border-radius:50%;border:1px solid rgba(6,182,212,.35);cursor:pointer;transition:all .3s;position:relative}
+.dn::before{content:attr(data-label);position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.58rem;color:var(--cyan);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.dn:hover::before{opacity:1}
+.dn.active{background:var(--cyan);box-shadow:0 0 10px var(--cyan);width:10px;height:10px}
+.dn:hover{border-color:var(--cyan);background:rgba(6,182,212,.2)}
+
+/* ══ NAV ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 6%;display:flex;align-items:center;justify-content:space-between;transition:all .3s}
+nav.solid{background:rgba(3,7,18,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--mono);font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;list-style:none;gap:2.5rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;letter-spacing:.04em;transition:color .2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--cyan);transition:width .3s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-links a:hover::after{width:100%}
+.btn-hire{padding:.45rem 1.2rem;border:1px solid var(--cyan);color:var(--cyan);border-radius:6px;text-decoration:none;font-size:.82rem;font-weight:600;font-family:var(--mono);transition:all .3s}
+.btn-hire:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 20px var(--cyan-glow)}
+
+/* ══ HERO ══ */
+#hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:0 6%;padding-top:90px}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem 1rem;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:100px;font-size:.75rem;color:var(--emerald);font-family:var(--mono);margin-bottom:1.4rem;opacity:0}
+.hero-badge::before{content:'';width:7px;height:7px;background:var(--emerald);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 5px transparent}}
+.hero-name{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:700;line-height:1.08;margin-bottom:1rem;opacity:0}
+.grad{background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.type-wrap{font-family:var(--mono);font-size:clamp(.95rem,1.8vw,1.2rem);color:var(--muted);margin-bottom:1.4rem;min-height:2em;opacity:0}
+.type-hi{color:var(--cyan);font-weight:700}
+.blink{display:inline-block;width:2px;height:1.1em;background:var(--cyan);margin-left:1px;vertical-align:text-bottom;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-desc{font-size:.97rem;color:var(--muted);line-height:1.85;max-width:500px;margin-bottom:2rem;opacity:0}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.8rem;opacity:0}
+.btn-p{padding:.75rem 1.8rem;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.92rem;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 25px rgba(6,182,212,.25);display:inline-block}
+.btn-p:hover{box-shadow:0 8px 30px rgba(6,182,212,.5)}
+.btn-o{padding:.75rem 1.8rem;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:600;font-size:.92rem;cursor:pointer;text-decoration:none;transition:all .3s;display:inline-block}
+.btn-o:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.05)}
+.hero-stats{display:flex;gap:2.5rem;opacity:0}
+.s-num{font-size:2rem;font-weight:700;font-family:var(--mono);background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1}
+.s-lbl{font-size:.75rem;color:var(--muted);font-family:var(--mono)}
+
+/* ══ HERO 3D CANVAS ══ */
+.hero-vis{display:flex;justify-content:center;align-items:center;opacity:0}
+#hero3d{display:block;width:380px;height:380px}
+
+/* ══ SECTIONS ══ */
+section{position:relative;z-index:1;padding:5.5rem 6%}
+.si{max-width:1200px;margin:0 auto}
+.sec-label{font-family:var(--mono);font-size:.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.2em;margin-bottom:.7rem;display:flex;align-items:center;gap:.8rem}
+.sec-label::after{content:'';flex:1;max-width:50px;height:1px;background:var(--cyan);opacity:.4}
+.sec-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;margin-bottom:2.8rem;line-height:1.2}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(6,182,212,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,.025) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+.alt-bg{background:rgba(15,23,42,.45)}
+.rv{opacity:0;transform:translateY(28px) rotateX(5deg);transition:opacity .65s ease,transform .65s ease;transform-origin:top center}
+.rv.in{opacity:1;transform:translateY(0) rotateX(0)}
+
+/* ══ SKILLS ══ */
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.3rem}
+.sk-card{background:rgba(30,41,59,.55);border:1px solid var(--border);border-radius:14px;padding:1.7rem;backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden;will-change:transform}
+.sk-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--violet));transform:scaleX(0);transition:transform .4s}
+.sk-card:hover::before{transform:scaleX(1)}
+.sk-card:hover{border-color:rgba(6,182,212,.2);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.sk-icon{font-size:1.4rem;margin-bottom:.9rem}
+.sk-cat{font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-bottom:.9rem}
+.sk-tags{display:flex;flex-wrap:wrap;gap:.45rem}
+.sk-tag{padding:.25rem .7rem;background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.18);border-radius:5px;font-size:.76rem;font-family:var(--mono);color:var(--muted);transition:all .2s}
+.sk-tag:hover{background:rgba(6,182,212,.14);border-color:var(--cyan);color:var(--cyan)}
+
+/* ══ PROJECT FLIP CARDS ══ */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.4rem}
+.proj-flip{perspective:1100px;height:340px}
+.proj-flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.4,0,.2,1)}
+.proj-flip:hover .proj-flip-inner{transform:rotateY(180deg)}
+.proj-front,.proj-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;padding:2rem;overflow:hidden}
+.proj-front{background:rgba(15,23,42,.85);border:1px solid var(--border)}
+.proj-front::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--px,50%) var(--py,50%),rgba(6,182,212,.07) 0%,transparent 65%);opacity:0;transition:opacity .3s;pointer-events:none}
+.proj-front:hover::before{opacity:1}
+.proj-back{transform:rotateY(180deg);background:linear-gradient(145deg,rgba(8,16,42,.97),rgba(28,10,55,.97));border:1px solid rgba(139,92,246,.28);display:flex;flex-direction:column;justify-content:center}
+.proj-back-head{font-family:var(--mono);color:var(--violet);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:.9rem}
+.back-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.3rem}
+.back-pill{padding:.25rem .7rem;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.28);border-radius:100px;font-family:var(--mono);font-size:.68rem;color:var(--violet)}
+.back-links{display:flex;gap:.65rem}
+.bl{flex:1;text-align:center;padding:.52rem .4rem;border-radius:8px;font-family:var(--mono);font-size:.76rem;text-decoration:none;transition:all .25s;white-space:nowrap}
+.bl-live{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff}
+.bl-live:hover{box-shadow:0 4px 18px rgba(6,182,212,.4)}
+.bl-gh{border:1px solid var(--border);color:var(--muted)}
+.bl-gh:hover{border-color:var(--cyan);color:var(--cyan)}
+.proj-hint{position:absolute;bottom:.8rem;right:1rem;font-family:var(--mono);font-size:.6rem;color:rgba(148,163,184,.25);pointer-events:none}
+.proj-dot{position:absolute;top:1.4rem;right:1.4rem;width:8px;height:8px;border-radius:50%}
+.proj-num{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.8rem}
+.proj-name{font-size:1.2rem;font-weight:700;margin-bottom:.65rem}
+.proj-desc{font-size:.85rem;color:var(--muted);line-height:1.75;margin-bottom:1.1rem}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.38rem}
+.ptag{padding:.2rem .58rem;background:rgba(139,92,246,.09);border:1px solid rgba(139,92,246,.22);border-radius:4px;font-size:.68rem;font-family:var(--mono);color:var(--violet)}
+
+/* ══ TIMELINE ══ */
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--cyan),var(--violet) 70%,transparent)}
+.tl-item{position:relative;padding-bottom:2.5rem;opacity:0;transform:translateX(-16px);transition:opacity .6s,transform .6s}
+.tl-item.in{opacity:1;transform:translateX(0)}
+.tl-item::before{content:'';position:absolute;left:-1.95rem;top:6px;width:10px;height:10px;background:var(--cyan);border-radius:50%;box-shadow:0 0 12px var(--cyan)}
+.tl-date{font-family:var(--mono);font-size:.76rem;color:var(--cyan);margin-bottom:.4rem}
+.tl-role{font-size:1.15rem;font-weight:700;margin-bottom:.25rem}
+.tl-org{font-size:.87rem;color:var(--violet);font-family:var(--mono);margin-bottom:.9rem}
+.tl-list{list-style:none}
+.tl-list li{font-size:.87rem;color:var(--muted);line-height:1.75;padding-left:.9rem;position:relative;margin-bottom:.35rem}
+.tl-list li::before{content:'▸';position:absolute;left:0;color:var(--cyan)}
+
+/* ══ EDUCATION ══ */
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.3rem}
+.edu-card{background:rgba(30,41,59,.5);border:1px solid var(--border);border-radius:14px;padding:2rem;transition:all .35s}
+.edu-card:hover{border-color:rgba(139,92,246,.3);transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.3),0 0 25px rgba(139,92,246,.08)}
+.edu-deg{font-size:1.1rem;font-weight:700;margin-bottom:.35rem}
+.edu-school{font-size:.85rem;color:var(--violet);font-family:var(--mono);margin-bottom:.25rem}
+.edu-period{font-size:.78rem;color:var(--muted);font-family:var(--mono);margin-bottom:1rem}
+.edu-badge{display:inline-block;padding:.28rem .75rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:5px;font-family:var(--mono);font-size:.78rem;color:var(--violet)}
+
+/* ══ AWARDS ══ */
+.aw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1rem}
+.aw-card{background:rgba(30,41,59,.5);border:1px solid var(--border);border-radius:12px;padding:1.4rem;display:flex;gap:.9rem;align-items:flex-start;transition:all .3s}
+.aw-card:hover{border-color:rgba(6,182,212,.22);background:rgba(30,41,59,.75);transform:translateX(4px)}
+.aw-ico{font-size:1.7rem;line-height:1;flex-shrink:0}
+.aw-title{font-size:.97rem;font-weight:600;margin-bottom:.25rem}
+.aw-desc{font-size:.82rem;color:var(--muted);line-height:1.65}
+
+/* ══ CONTACT ══ */
+.ct-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.ct-desc{font-size:.95rem;color:var(--muted);line-height:1.85;margin-bottom:1.8rem}
+.ct-links{display:flex;flex-direction:column;gap:.9rem}
+.ctlink{display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:rgba(30,41,59,.55);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--muted);transition:all .3s}
+.ctlink:hover{border-color:rgba(6,182,212,.3);color:var(--cyan);transform:translateX(5px)}
+.ct-ico{width:34px;height:34px;background:rgba(6,182,212,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.ct-box{background:rgba(30,41,59,.75);border:1px solid var(--border);border-radius:14px;padding:2rem}
+.ct-box h3{font-family:var(--mono);font-size:1rem;color:var(--cyan);margin-bottom:1.4rem}
+.ct-row{display:flex;align-items:center;gap:.9rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.ct-row:last-child{border-bottom:none}
+.ct-row-ico{width:30px;height:30px;background:rgba(139,92,246,.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.ct-row-text{font-size:.82rem;font-family:var(--mono);color:var(--muted)}
+
+/* ══ FOOTER ══ */
+footer{position:relative;z-index:1;padding:1.8rem 6%;text-align:center;border-top:1px solid var(--border)}
+footer p{font-size:.82rem;color:var(--muted);font-family:var(--mono)}
+footer span{color:var(--cyan)}
+
+/* ══ AVATAR WIDGET ══ */
+#av-widget{position:fixed;bottom:2rem;right:2rem;z-index:5000;display:flex;flex-direction:column;align-items:flex-end;gap:.7rem;transform:translateY(130px);opacity:0;transition:transform .6s cubic-bezier(.4,0,.2,1),opacity .6s ease;pointer-events:none}
+#av-widget.show{transform:translateY(0);opacity:1;pointer-events:all}
+#av-bubble{background:rgba(10,18,40,.96);border:1px solid rgba(6,182,212,.32);border-radius:16px 16px 4px 16px;padding:1.1rem 1.25rem;max-width:270px;min-width:190px;position:relative;box-shadow:0 0 28px rgba(6,182,212,.1),0 10px 36px rgba(0,0,0,.45);backdrop-filter:blur(14px)}
+#av-bubble::after{content:'';position:absolute;bottom:-8px;right:26px;border-left:8px solid transparent;border-right:0 solid transparent;border-top:8px solid rgba(6,182,212,.32)}
+#av-text{font-family:var(--mono);font-size:.78rem;color:var(--text);line-height:1.75;min-height:4em;white-space:pre-wrap}
+#av-caret{display:inline-block;width:2px;height:.85em;background:var(--cyan);margin-left:1px;vertical-align:middle;animation:blink 1s infinite}
+.av-acts{display:flex;gap:.5rem;margin-top:.8rem}
+.av-btn{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:.26rem .7rem;border-radius:5px;cursor:pointer;transition:all .2s;border:1px solid rgba(6,182,212,.28);background:rgba(6,182,212,.07);color:var(--cyan)}
+.av-btn:hover{background:rgba(6,182,212,.18)}
+.av-btn.av-x{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted)}
+.av-btn.av-x:hover{border-color:rgba(248,113,113,.3);color:#f87171}
+#av-char{width:88px;height:88px;filter:drop-shadow(0 0 14px rgba(6,182,212,.45));animation:avF 3.5s ease-in-out infinite;cursor:pointer;flex-shrink:0}
+@keyframes avF{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.av-eye{animation:avB 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes avB{0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.06)}}
+#av-mouth{transition:y .1s,height .1s}
+
+/* ══ MOBILE ══ */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-vis{display:none}
+  .hero-stats{flex-wrap:wrap;gap:1.4rem}
+  .nav-links{display:none}
+  .ct-inner{grid-template-columns:1fr}
+  .ct-box{display:none}
+  #dot-nav{display:none}
+  .proj-flip{height:auto}
+  .proj-flip-inner{transform-style:flat;transform:none !important;position:static}
+  .proj-front{position:static;backface-visibility:visible}
+  .proj-back{display:none}
+}
+
+/* ══ GITHUB REPO CARDS ══ */
+.gh-divider{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;margin-top:3.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem}
+.gh-divider::before,.gh-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.gh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+.gh-card{background:rgba(15,23,42,.7);border:1px solid var(--border);border-radius:12px;padding:1.35rem;transition:all .3s;position:relative;overflow:hidden}
+.gh-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--violet),transparent);transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.gh-card:hover::before{transform:scaleX(1)}
+.gh-card:hover{border-color:rgba(139,92,246,.25);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.3)}
+.gh-lang{display:inline-flex;align-items:center;gap:.38rem;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.55rem}
+.gh-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.gh-rname{font-size:.97rem;font-weight:600;margin-bottom:.45rem}
+.gh-rdesc{font-size:.76rem;color:var(--muted);line-height:1.65;margin-bottom:.9rem;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.gh-foot{display:flex;align-items:center;gap:.9rem;margin-top:auto}
+.gh-lnk{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-decoration:none;transition:color .2s}
+.gh-lnk:hover{color:var(--cyan)}
+.gh-star{font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-left:auto}
+#gh-loading{font-family:var(--mono);font-size:.75rem;color:var(--muted);text-align:center;padding:2rem;letter-spacing:.1em}
+
+/* ══ CHATBOT ══ */
+#chatbot{position:fixed;bottom:2rem;left:2rem;z-index:5001}
+#cb-toggle{width:54px;height:54px;background:linear-gradient(135deg,var(--cyan),var(--violet));border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 22px rgba(6,182,212,.4),0 4px 16px rgba(0,0,0,.4);position:relative;transition:transform .2s,box-shadow .2s;border:none;font-size:1.35rem}
+#cb-toggle:hover{transform:scale(1.1);box-shadow:0 0 32px rgba(6,182,212,.6)}
+#cb-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;font-size:.58rem;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);border:2px solid var(--bg);font-weight:700}
+#cb-window{position:absolute;bottom:68px;left:0;width:320px;background:rgba(8,15,36,.97);border:1px solid rgba(6,182,212,.22);border-radius:18px;display:none;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.55),0 0 32px rgba(6,182,212,.07);backdrop-filter:blur(18px)}
+#cb-window.open{display:flex;animation:cbSlide .3s cubic-bezier(.4,0,.2,1)}
+@keyframes cbSlide{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+#cb-header{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;border-bottom:1px solid var(--border);background:rgba(6,182,212,.04)}
+.cb-av{width:36px;height:36px;background:linear-gradient(135deg,var(--cyan),var(--violet));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 10px rgba(6,182,212,.35)}
+.cb-name{font-size:.87rem;font-weight:600}
+.cb-status{font-size:.62rem;color:var(--emerald);font-family:var(--mono)}
+#cb-x{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:.2rem .4rem;border-radius:4px;transition:color .2s}
+#cb-x:hover{color:#f87171}
+#cb-msgs{height:268px;overflow-y:auto;padding:.85rem;display:flex;flex-direction:column;gap:.6rem;scroll-behavior:smooth}
+#cb-msgs::-webkit-scrollbar{width:3px}
+#cb-msgs::-webkit-scrollbar-thumb{background:rgba(6,182,212,.2);border-radius:3px}
+.cbm{max-width:86%;padding:.58rem .82rem;border-radius:12px;font-size:.76rem;line-height:1.65;animation:cbM .22s ease;white-space:pre-wrap;word-break:break-word}
+@keyframes cbM{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.cbm.bot{background:rgba(30,41,59,.85);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.cbm.usr{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.cb-typing{display:flex;gap:4px;padding:.58rem .82rem;background:rgba(30,41,59,.85);border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:4px;align-self:flex-start}
+.cbd{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:cbD 1.2s ease-in-out infinite}
+.cbd:nth-child(2){animation-delay:.2s}.cbd:nth-child(3){animation-delay:.4s}
+@keyframes cbD{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
+#cb-sugs{display:flex;gap:.38rem;padding:.55rem .85rem;flex-wrap:wrap;border-top:1px solid var(--border)}
+.cbs{font-family:var(--mono);font-size:.6rem;padding:.22rem .6rem;border:1px solid rgba(6,182,212,.22);background:rgba(6,182,212,.06);color:var(--cyan);border-radius:100px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cbs:hover{background:rgba(6,182,212,.16);border-color:rgba(6,182,212,.4)}
+#cb-row{display:flex;gap:.45rem;padding:.6rem .85rem;border-top:1px solid var(--border)}
+#cb-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.42rem .72rem;color:var(--text);font-family:var(--mono);font-size:.74rem;outline:none;transition:border-color .2s}
+#cb-inp:focus{border-color:rgba(6,182,212,.38)}
+#cb-inp::placeholder{color:rgba(148,163,184,.35)}
+#cb-send{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),var(--violet));border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+#cb-send:hover{opacity:.82}
+@media(max-width:900px){#chatbot{bottom:1rem;left:1rem}#cb-window{width:calc(100vw - 4rem)}}
+</style>
+</head>
+<body>
+
+<!-- ══ INTRO ══ -->
+<div id="intro">
+  <canvas id="i-rain"></canvas>
+  <div id="i-body">
+    <div class="i-tag">Portfolio · 2025</div>
+    <div class="i-logo" data-text="NK">NK</div>
+    <div class="i-name">Kollipakula Nikhil &nbsp;·&nbsp; AI &amp; Fullstack Developer</div>
+    <div class="i-bar-wrap">
+      <div class="i-bar-top">
+        <span id="i-status">INITIALIZING...</span>
+        <span id="i-pct">0%</span>
+      </div>
+      <div class="i-track"><div id="i-fill"></div></div>
+    </div>
+  </div>
+  <div id="i-skip">SKIP ▶</div>
+</div>
+
+<!-- ══ UTILITIES ══ -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="scroll-bar"></div>
+<canvas id="bg-canvas"></canvas>
+<canvas id="click-canvas"></canvas>
+
+<!-- ══ AVATAR WIDGET ══ -->
+<div id="av-widget">
+  <div id="av-bubble">
+    <div id="av-text"></div><span id="av-caret"></span>
+    <div class="av-acts">
+      <button class="av-btn" id="av-replay">↺ Replay</button>
+      <button class="av-btn av-x" id="av-close">✕ Close</button>
+    </div>
+  </div>
+  <div id="av-char" title="Click to toggle">
+    <svg viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- body -->
+      <rect x="24" y="60" width="40" height="22" rx="7" fill="#0a1628" stroke="#06b6d4" stroke-width="1.2"/>
+      <!-- neck -->
+      <rect x="35" y="55" width="18" height="7" rx="3" fill="#0a1628" stroke="#06b6d4" stroke-width="1"/>
+      <!-- head -->
+      <rect x="10" y="12" width="68" height="45" rx="18" fill="#060e1e" stroke="#06b6d4" stroke-width="1.6"/>
+      <!-- glow fill on head -->
+      <rect x="10" y="12" width="68" height="45" rx="18" fill="url(#hg)" opacity=".18"/>
+      <!-- antenna -->
+      <line x1="44" y1="12" x2="44" y2="3" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="44" cy="2" r="3.5" fill="#8b5cf6"/>
+      <circle cx="44" cy="2" r="3.5" fill="#8b5cf6" opacity=".5" style="animation:pulse 2s infinite"/>
+      <!-- ears -->
+      <rect x="6"  y="26" width="5" height="12" rx="2.5" fill="#0a1628" stroke="#06b6d4" stroke-width="1"/>
+      <rect x="77" y="26" width="5" height="12" rx="2.5" fill="#0a1628" stroke="#06b6d4" stroke-width="1"/>
+      <!-- eye sockets -->
+      <ellipse cx="30" cy="33" rx="9" ry="9" fill="#001520"/>
+      <ellipse cx="58" cy="33" rx="9" ry="9" fill="#001520"/>
+      <!-- eyes -->
+      <ellipse class="av-eye" cx="30" cy="33" rx="7" ry="7" fill="#06b6d4" opacity=".92"/>
+      <ellipse cx="30" cy="33" rx="3.5" ry="3.5" fill="#001a22"/>
+      <circle  cx="32" cy="31" r="1.5" fill="#fff" opacity=".75"/>
+      <ellipse class="av-eye" cx="58" cy="33" rx="7" ry="7" fill="#06b6d4" opacity=".92"/>
+      <ellipse cx="58" cy="33" rx="3.5" ry="3.5" fill="#001a22"/>
+      <circle  cx="60" cy="31" r="1.5" fill="#fff" opacity=".75"/>
+      <!-- mouth -->
+      <rect id="av-mouth" x="34" y="47" width="20" height="5" rx="2.5" fill="#06b6d4" opacity=".85"/>
+      <!-- chest panel -->
+      <circle cx="44" cy="71" r="5" fill="#10b981" opacity=".85"/>
+      <circle cx="32" cy="73" r="3" fill="#8b5cf6" opacity=".65"/>
+      <circle cx="56" cy="73" r="3" fill="#8b5cf6" opacity=".65"/>
+      <!-- scanline on face -->
+      <rect x="10" y="34" width="68" height="1" fill="#06b6d4" opacity=".06"/>
+      <defs>
+        <radialGradient id="hg" cx="50%" cy="30%" r="60%">
+          <stop offset="0%" stop-color="#06b6d4"/>
+          <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+    </svg>
+  </div>
+</div>
+
+<!-- ══ CHATBOT ══ -->
+<div id="chatbot">
+  <div id="cb-window">
+    <div id="cb-header">
+      <div class="cb-av">NK</div>
+      <div>
+        <div class="cb-name">Nikhil's AI</div>
+        <div class="cb-status">● Online · Ask me anything</div>
+      </div>
+      <button id="cb-x">✕</button>
+    </div>
+    <div id="cb-msgs"></div>
+    <div id="cb-sugs">
+      <button class="cbs">Skills</button>
+      <button class="cbs">Projects</button>
+      <button class="cbs">Certifications</button>
+      <button class="cbs">Contact</button>
+      <button class="cbs">Hire Nikhil</button>
+    </div>
+    <div id="cb-row">
+      <input id="cb-inp" type="text" placeholder="Ask about Nikhil..." autocomplete="off">
+      <button id="cb-send">↑</button>
+    </div>
+  </div>
+  <button id="cb-toggle" title="Chat with Nikhil's AI">
+    💬<span id="cb-badge">1</span>
+  </button>
+</div>
+
+<!-- ══ DOT NAV ══ -->
+<div id="dot-nav">
+  <div class="dn active" data-label="HOME"       data-target="hero"></div>
+  <div class="dn"        data-label="SKILLS"     data-target="skills"></div>
+  <div class="dn"        data-label="PROJECTS"   data-target="projects"></div>
+  <div class="dn"        data-label="EXPERIENCE" data-target="experience"></div>
+  <div class="dn"        data-label="EDUCATION"  data-target="education"></div>
+  <div class="dn"        data-label="AWARDS"     data-target="awards"></div>
+  <div class="dn"        data-label="CONTACT"    data-target="contact"></div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <div class="logo">NK</div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:kollipakulanikhil21@gmail.com" class="btn-hire">Hire Me</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge" id="hb">Available for Opportunities</div>
+      <h1 class="hero-name" id="hn">Kollipakula<br><span class="grad">Nikhil</span></h1>
+      <div class="type-wrap" id="tw">I build <span class="type-hi" id="ty"></span><span class="blink"></span></div>
+      <p class="hero-desc" id="hd">Fullstack Developer &amp; Generative AI Engineer — building intelligent, scalable systems with LangChain, Azure Cloud, FastAPI, and React.</p>
+      <div class="hero-cta" id="hc">
+        <a href="#projects" class="btn-p mag">View Projects →</a>
+        <a href="https://github.com/KollipakulaNikhil" target="_blank" class="btn-o mag">GitHub ↗</a>
+      </div>
+      <div class="hero-stats" id="hs">
+        <div><span class="s-num" data-t="4">0</span><span class="s-lbl">Projects</span></div>
+        <div><span class="s-num" data-t="3">0</span><span class="s-lbl">Certs</span></div>
+        <div><span class="s-num" data-t="15">0</span><span class="s-lbl">Technologies</span></div>
+        <div><span class="s-num" data-t="100">0</span><span class="s-lbl">Mentored</span></div>
+      </div>
+    </div>
+    <div class="hero-vis" id="hv">
+      <canvas id="hero3d"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SKILLS ══ -->
+<section id="skills" class="alt-bg">
+  <div class="grid-bg"></div>
+  <div class="si">
+    <div class="sec-label">Tech Stack</div>
+    <h2 class="sec-title rv">Technical <span class="grad">Skills</span></h2>
+    <div class="sk-grid">
+      <div class="sk-card rv"><div class="sk-icon">🐍</div><div class="sk-cat">Languages</div><div class="sk-tags"><span class="sk-tag">Python</span><span class="sk-tag">JavaScript</span><span class="sk-tag">C++</span><span class="sk-tag">Java</span><span class="sk-tag">SQL</span><span class="sk-tag">HTML</span><span class="sk-tag">CSS</span></div></div>
+      <div class="sk-card rv"><div class="sk-icon">🚀</div><div class="sk-cat">Frameworks</div><div class="sk-tags"><span class="sk-tag">Flask</span><span class="sk-tag">FastAPI</span><span class="sk-tag">React.js</span><span class="sk-tag">Tailwind CSS</span><span class="sk-tag">Git</span></div></div>
+      <div class="sk-card rv"><div class="sk-icon">🤖</div><div class="sk-cat">AI / Automation</div><div class="sk-tags"><span class="sk-tag">LangChain</span><span class="sk-tag">Ollama</span><span class="sk-tag">Playwright</span><span class="sk-tag">Selenium</span><span class="sk-tag">Puppeteer</span><span class="sk-tag">NLP</span></div></div>
+      <div class="sk-card rv"><div class="sk-icon">☁️</div><div class="sk-cat">Cloud &amp; DevOps</div><div class="sk-tags"><span class="sk-tag">Microsoft Azure</span><span class="sk-tag">CI/CD</span><span class="sk-tag">Monitoring</span><span class="sk-tag">Autoscaling</span></div></div>
+      <div class="sk-card rv"><div class="sk-icon">📊</div><div class="sk-cat">Data Science</div><div class="sk-tags"><span class="sk-tag">NumPy</span><span class="sk-tag">pandas</span><span class="sk-tag">Matplotlib</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects">
+  <div class="si">
+    <div class="sec-label">What I've Built</div>
+    <h2 class="sec-title rv">Featured <span class="grad">Projects</span></h2>
+    <div class="proj-grid">
+
+      <div class="proj-flip rv">
+        <div class="proj-flip-inner">
+          <div class="proj-front">
+            <div class="proj-dot" style="background:var(--cyan);box-shadow:0 0 10px var(--cyan)"></div>
+            <div class="proj-num">01 / AI</div>
+            <h3 class="proj-name">Text-to-PPT Generator</h3>
+            <p class="proj-desc">AI tool that converts unstructured text into structured PowerPoint slides. Integrates NLP models to parse content hierarchy and automate slide generation end-to-end.</p>
+            <div class="proj-tags"><span class="ptag">Python</span><span class="ptag">NLP</span><span class="ptag">Generative AI</span><span class="ptag">Automation</span></div>
+            <div class="proj-hint">hover to flip ↻</div>
+          </div>
+          <div class="proj-back">
+            <div class="proj-back-head">// Tech Stack</div>
+            <div class="back-pills"><span class="back-pill">Python</span><span class="back-pill">OpenAI API</span><span class="back-pill">python-pptx</span><span class="back-pill">NLP</span><span class="back-pill">Streamlit</span></div>
+            <div class="back-links"><a href="https://github.com/KollipakulaNikhil" target="_blank" class="bl bl-gh">GitHub ↗</a></div>
+          </div>
         </div>
       </div>
-      <nav class="dock">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <a class="btn small" href="#contact">Contact</a>
-    </header>
 
-    <div class="scroll-meter" aria-hidden="true"><span></span></div>
-
-    <main>
-      <section id="home" class="hero">
-        <div class="hero-intro" data-reveal>
-          <p class="eyebrow">Steam inspired AI portfolio</p>
-          <h1>Designing immersive AI experiences in 3D.</h1>
-          <p class="role">AI Engineer | Gen-AI Developer</p>
-          <p class="lead">
-            I build intelligent systems that merge AI with interactive, game-like interfaces.
-            My work spans machine learning, deep learning, and data driven products showcased
-            through cinematic 3D UI.
-          </p>
-          <div class="hero-actions">
-            <a class="btn" href="#projects">Explore Projects</a>
-            <a
-              class="btn ghost"
-              href="https://steamcommunity.com/id/yourhandle"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Steam Profile
-            </a>
+      <div class="proj-flip rv">
+        <div class="proj-flip-inner">
+          <div class="proj-front">
+            <div class="proj-dot" style="background:var(--violet);box-shadow:0 0 10px var(--violet)"></div>
+            <div class="proj-num">02 / WEB</div>
+            <h3 class="proj-name">MoonPhase Explorer</h3>
+            <p class="proj-desc">Real-time moon phase calculator with AI-generated visuals. Deployed with autoscaling, rolling updates, and full CI/CD pipelines for high availability.</p>
+            <div class="proj-tags"><span class="ptag">JavaScript</span><span class="ptag">CI/CD</span><span class="ptag">Azure</span><span class="ptag">Autoscaling</span></div>
+            <div class="proj-hint">hover to flip ↻</div>
           </div>
-          <div class="hero-badges">
-            <span>Open To Work</span>
-            <span>Vijayawada, IN</span>
-            <span>Gen-AI Systems</span>
-          </div>
-          <div class="social">
-            <a
-              href="https://github.com/KollipakulaNikhil"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M12 2a10 10 0 0 0-3.16 19.48c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.2-3.37-1.2-.45-1.17-1.1-1.48-1.1-1.48-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.84.09-.65.35-1.1.63-1.35-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.02-2.68-.1-.25-.44-1.26.1-2.63 0 0 .84-.27 2.75 1.02A9.5 9.5 0 0 1 12 6.8c.85 0 1.71.11 2.5.32 1.9-1.3 2.74-1.02 2.74-1.02.54 1.37.2 2.38.1 2.63.64.7 1.02 1.59 1.02 2.68 0 3.85-2.35 4.7-4.58 4.95.36.3.68.9.68 1.82v2.7c0 .26.18.58.69.48A10 10 0 0 0 12 2z"
-                />
-              </svg>
-            </a>
-            <a
-              href="https://www.linkedin.com/in/kollipakulanikhil/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M4.98 3.5c0 1.38-1.11 2.5-2.48 2.5A2.49 2.49 0 0 1 0 3.5C0 2.12 1.11 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0zM7.5 8h4.78v2.2h.07c.66-1.24 2.27-2.54 4.68-2.54 5 0 5.92 3.28 5.92 7.54V24h-5v-7.14c0-1.7-.03-3.88-2.36-3.88-2.37 0-2.73 1.84-2.73 3.76V24h-5z"
-                />
-              </svg>
-            </a>
-            <a
-              href="https://www.instagram.com/__nik.hil__21/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.5 5.5 0 0 0 12 7.5zm0 2A3.5 3.5 0 1 1 8.5 13 3.5 3.5 0 0 1 12 9.5zm5.25-3.4a1.05 1.05 0 1 0 1.05 1.05 1.05 1.05 0 0 0-1.05-1.05z"
-                />
-              </svg>
-            </a>
-            <a
-              href="https://www.facebook.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M13 9h3V6h-3c-2.2 0-4 1.8-4 4v2H7v3h2v7h3v-7h3l1-3h-4v-2c0-.55.45-1 1-1z"
-                />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="hero-visual" data-reveal>
-          <article class="profile-card tilt-surface" data-tilt>
-            <div class="profile-header">
-              <div>
-                <p class="profile-label">Steam Deck Node</p>
-                <h3>Kollipakula Nikhil</h3>
-                <p>AI Engineer | Open To Work</p>
-              </div>
-              <span class="status-pill">Online</span>
-            </div>
-            <div class="profile-row">
-              <img src="nikhil.jpg" alt="Kollipakula Nikhil" />
-              <div class="profile-meta">
-                <div>
-                  <span>Email</span>
-                  <strong>kollipakulanikhil21@gmail.com</strong>
-                </div>
-                <div>
-                  <span>Phone</span>
-                  <strong>+91 9381675512</strong>
-                </div>
-                <div>
-                  <span>Location</span>
-                  <strong>Vijayawada</strong>
-                </div>
-              </div>
-            </div>
-            <div class="profile-stats">
-              <div>
-                <span>AI Projects</span>
-                <strong>3+</strong>
-              </div>
-              <div>
-                <span>3D Experiments</span>
-                <strong>6+</strong>
-              </div>
-              <div>
-                <span>Steam Mods</span>
-                <strong>4+</strong>
-              </div>
-            </div>
-            <div class="profile-actions">
-              <a class="btn small" href="mailto:kollipakulanikhil21@gmail.com">Email Me</a>
-              <a
-                class="btn small ghost"
-                href="https://steamcommunity.com/id/yourhandle"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Steam Profile
-              </a>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="about" class="section">
-        <div class="section-head" data-reveal>
-          <h2>About</h2>
-          <p>
-            As an aspiring AI and ML engineering student, I focus on building scalable and
-            ethical AI systems. I enjoy blending NLP, computer vision, and real time
-            interfaces to deliver experiences that feel like a game launcher.
-          </p>
-        </div>
-        <div class="about-grid" data-reveal>
-          <div class="panel">
-            <h3>Profile</h3>
-            <p>
-              I specialize in data driven development, Gen-AI workflows, and interactive
-              demos that translate complex models into clear user journeys.
-            </p>
-            <div class="info-grid">
-              <div class="info-item">
-                <span>Name</span>
-                <strong>Kollipakula Nikhil</strong>
-              </div>
-              <div class="info-item">
-                <span>Email</span>
-                <strong>kollipakulanikhil21@gmail.com</strong>
-              </div>
-              <div class="info-item">
-                <span>Location</span>
-                <strong>Vijayawada</strong>
-              </div>
-              <div class="info-item">
-                <span>Status</span>
-                <strong>Open To Work</strong>
-              </div>
-            </div>
-          </div>
-          <div class="panel">
-            <h3>Focus Areas</h3>
-            <ul class="focus-list">
-              <li>Gen-AI product prototypes and assistants</li>
-              <li>Machine learning, deep learning, and evaluation</li>
-              <li>Realtime 3D UI for AI experiences</li>
-            </ul>
-            <div class="callout">
-              <span>Currently</span>
-              Building Steam style AI demos and interactive launchers.
+          <div class="proj-back">
+            <div class="proj-back-head">// Tech Stack</div>
+            <div class="back-pills"><span class="back-pill">JavaScript</span><span class="back-pill">Azure</span><span class="back-pill">Docker</span><span class="back-pill">CI/CD</span><span class="back-pill">Canvas API</span></div>
+            <div class="back-links">
+              <a href="https://kollipakulanikhil.github.io/moon-phase-tracker/" target="_blank" class="bl bl-live">Live ↗</a>
+              <a href="https://github.com/KollipakulaNikhil" target="_blank" class="bl bl-gh">GitHub ↗</a>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section id="projects" class="section projects">
-        <div class="section-head" data-reveal>
-          <h2>Project Hangar</h2>
-          <p>Scroll to spin the 3D ring, or select a project from the console.</p>
-        </div>
-        <div class="project-stage" data-reveal>
-          <div class="project-orbit">
-            <div class="carousel-scene">
-              <div class="carousel" style="--count: 3">
-                <article class="carousel-card" style="--i: 0" data-project="0">
-                  <div class="project-surface" data-tilt>
-                    <img src="voice.png" alt="AI Text to Voice Generator" />
-                    <div class="project-body">
-                      <h3>AI Text To Voice Generator</h3>
-                      <p>
-                        An AI powered text to voice generator that converts written content
-                        into natural sounding speech.
-                      </p>
-                      <div class="project-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JavaScript</span>
-                        <span>Python</span>
-                      </div>
-                      <div class="project-links">
-                        <a
-                          class="btn small ghost"
-                          href="https://kollipakulanikhil.github.io/Text-To-Voice-AI-Generator/"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Live Demo
-                        </a>
-                        <a
-                          class="btn small"
-                          href="https://github.com/KollipakulaNikhil/Text-To-Voice-AI-Generator"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          GitHub Repo
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="carousel-card" style="--i: 1" data-project="1">
-                  <div class="project-surface" data-tilt>
-                    <img src="moon.png" alt="Moon phase tracker" />
-                    <div class="project-body">
-                      <h3>Moon Phase Tracker</h3>
-                      <p>
-                        A dynamic moon phase tracker that calculates and displays the
-                        current phase using precise astronomical data.
-                      </p>
-                      <div class="project-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JavaScript</span>
-                        <span>Python</span>
-                      </div>
-                      <div class="project-links">
-                        <a
-                          class="btn small ghost"
-                          href="https://kollipakulanikhil.github.io/moon-phase-tracker/"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Live Demo
-                        </a>
-                        <a
-                          class="btn small"
-                          href="https://github.com/KollipakulaNikhil/moon-phase-tracker"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          GitHub Repo
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="carousel-card" style="--i: 2" data-project="2">
-                  <div class="project-surface" data-tilt>
-                    <img src="music.png" alt="Music library" />
-                    <div class="project-body">
-                      <h3>Music Library</h3>
-                      <p>
-                        A smart music library organizer that manages and retrieves songs
-                        using advanced data structures.
-                      </p>
-                      <div class="project-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JavaScript</span>
-                      </div>
-                      <div class="project-links">
-                        <a
-                          class="btn small ghost"
-                          href="https://kollipakulanikhil.github.io/Music-Library/"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Live Demo
-                        </a>
-                        <a
-                          class="btn small"
-                          href="https://github.com/KollipakulaNikhil/Music-Library"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          GitHub Repo
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            </div>
-            <div class="orbit-base" aria-hidden="true"></div>
+      <div class="proj-flip rv">
+        <div class="proj-flip-inner">
+          <div class="proj-front">
+            <div class="proj-dot" style="background:var(--emerald);box-shadow:0 0 10px var(--emerald)"></div>
+            <div class="proj-num">03 / AI</div>
+            <h3 class="proj-name">Text-To-Voice AI Generator</h3>
+            <p class="proj-desc">AI-powered TTS engine converting text to natural, expressive speech. Supports 5 Indian languages and 5 international languages for multilingual audio output.</p>
+            <div class="proj-tags"><span class="ptag">Python</span><span class="ptag">TTS</span><span class="ptag">Multilingual</span><span class="ptag">AI</span></div>
+            <div class="proj-hint">hover to flip ↻</div>
           </div>
-
-          <div class="project-console">
-            <div class="project-tabs" role="tablist" aria-label="Project selector">
-              <button class="project-tab active" type="button" data-project-tab="0" aria-pressed="true">
-                AI Voice
-              </button>
-              <button class="project-tab" type="button" data-project-tab="1" aria-pressed="false">
-                Moon Phase
-              </button>
-              <button class="project-tab" type="button" data-project-tab="2" aria-pressed="false">
-                Music Library
-              </button>
-            </div>
-            <div class="console-grid">
-              <article class="console-card active" data-project="0">
-                <div class="console-head">
-                  <h3>AI Text To Voice Generator</h3>
-                  <span class="console-tag">Gen-AI</span>
-                </div>
-                <p>
-                  Converts written content into natural sounding speech with a clean and
-                  modern UI.
-                </p>
-                <div class="console-tags">
-                  <span>HTML</span>
-                  <span>CSS</span>
-                  <span>JavaScript</span>
-                  <span>Python</span>
-                </div>
-                <div class="console-links">
-                  <a
-                    class="btn small"
-                    href="https://kollipakulanikhil.github.io/Text-To-Voice-AI-Generator/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Live Demo
-                  </a>
-                  <a
-                    class="btn small ghost"
-                    href="https://github.com/KollipakulaNikhil/Text-To-Voice-AI-Generator"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    GitHub Repo
-                  </a>
-                </div>
-              </article>
-
-              <article class="console-card" data-project="1">
-                <div class="console-head">
-                  <h3>Moon Phase Tracker</h3>
-                  <span class="console-tag">Data Viz</span>
-                </div>
-                <p>
-                  Real time moon phase tracking with precise astronomical calculations and a
-                  soft 3D interface.
-                </p>
-                <div class="console-tags">
-                  <span>HTML</span>
-                  <span>CSS</span>
-                  <span>JavaScript</span>
-                  <span>Python</span>
-                </div>
-                <div class="console-links">
-                  <a
-                    class="btn small"
-                    href="https://kollipakulanikhil.github.io/moon-phase-tracker/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Live Demo
-                  </a>
-                  <a
-                    class="btn small ghost"
-                    href="https://github.com/KollipakulaNikhil/moon-phase-tracker"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    GitHub Repo
-                  </a>
-                </div>
-              </article>
-
-              <article class="console-card" data-project="2">
-                <div class="console-head">
-                  <h3>Music Library</h3>
-                  <span class="console-tag">UI Systems</span>
-                </div>
-                <p>
-                  A smart music library organizer that manages and retrieves songs with a
-                  performant UI layer.
-                </p>
-                <div class="console-tags">
-                  <span>HTML</span>
-                  <span>CSS</span>
-                  <span>JavaScript</span>
-                </div>
-                <div class="console-links">
-                  <a
-                    class="btn small"
-                    href="https://kollipakulanikhil.github.io/Music-Library/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Live Demo
-                  </a>
-                  <a
-                    class="btn small ghost"
-                    href="https://github.com/KollipakulaNikhil/Music-Library"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    GitHub Repo
-                  </a>
-                </div>
-              </article>
+          <div class="proj-back">
+            <div class="proj-back-head">// Tech Stack</div>
+            <div class="back-pills"><span class="back-pill">Python</span><span class="back-pill">gTTS</span><span class="back-pill">pyttsx3</span><span class="back-pill">Flask</span><span class="back-pill">10 Languages</span></div>
+            <div class="back-links">
+              <a href="https://kollipakulanikhil.github.io/Text-To-Voice-AI-Generator/" target="_blank" class="bl bl-live">Live ↗</a>
+              <a href="https://github.com/KollipakulaNikhil" target="_blank" class="bl bl-gh">GitHub ↗</a>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section id="skills" class="section">
-        <div class="section-head" data-reveal>
-          <h2>Skills</h2>
-          <p>Full stack AI engineering with a focus on immersive UX.</p>
-        </div>
-        <div class="skills-grid" data-reveal>
-          <div class="panel">
-            <h3>AI and ML</h3>
-            <div class="chip-grid">
-              <span class="chip">Machine Learning</span>
-              <span class="chip">Deep Learning</span>
-              <span class="chip">NLP</span>
-              <span class="chip">Computer Vision</span>
-              <span class="chip">Prompt Engineering</span>
-              <span class="chip">RAG</span>
-            </div>
+      <div class="proj-flip rv">
+        <div class="proj-flip-inner">
+          <div class="proj-front">
+            <div class="proj-dot" style="background:#f59e0b;box-shadow:0 0 10px #f59e0b"></div>
+            <div class="proj-num">04 / HARDWARE</div>
+            <h3 class="proj-name">Arduino Obstacle Avoider</h3>
+            <p class="proj-desc">Autonomous robot using ultrasonic sensors for real-time obstacle detection and avoidance. Designed hardware and programmed firmware from scratch.</p>
+            <div class="proj-tags"><span class="ptag">Arduino</span><span class="ptag">C++</span><span class="ptag">Robotics</span><span class="ptag">Sensors</span></div>
+            <div class="proj-hint">hover to flip ↻</div>
           </div>
-          <div class="panel">
-            <h3>Frontend</h3>
-            <div class="chip-grid">
-              <span class="chip">HTML</span>
-              <span class="chip">CSS</span>
-              <span class="chip">JavaScript</span>
-              <span class="chip">Three.js</span>
-              <span class="chip">WebGL</span>
-              <span class="chip">UI Motion</span>
-            </div>
-          </div>
-          <div class="panel">
-            <h3>Backend and Data</h3>
-            <div class="chip-grid">
-              <span class="chip">Python</span>
-              <span class="chip">Node.js</span>
-              <span class="chip">APIs</span>
-              <span class="chip">Vector Databases</span>
-              <span class="chip">Data Pipelines</span>
-            </div>
+          <div class="proj-back">
+            <div class="proj-back-head">// Tech Stack</div>
+            <div class="back-pills"><span class="back-pill">Arduino C++</span><span class="back-pill">HC-SR04</span><span class="back-pill">L298N</span><span class="back-pill">PWM</span><span class="back-pill">Embedded</span></div>
+            <div class="back-links"><a href="https://github.com/KollipakulaNikhil" target="_blank" class="bl bl-gh">GitHub ↗</a></div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section id="services" class="section">
-        <div class="section-head" data-reveal>
-          <h2>Services</h2>
-          <p>What I can build for you right now.</p>
+    </div>
+
+    <!-- GitHub repos loaded dynamically -->
+    <div class="gh-divider">More from GitHub</div>
+    <div class="gh-grid" id="gh-grid">
+      <div id="gh-loading">⟳ Fetching repositories...</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ EXPERIENCE ══ -->
+<section id="experience" class="alt-bg">
+  <div class="grid-bg"></div>
+  <div class="si">
+    <div class="sec-label">Where I've Been</div>
+    <h2 class="sec-title rv">Work <span class="grad">Experience</span></h2>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">Jan 2025 – Present</div>
+        <div class="tl-role">Treasurer</div>
+        <div class="tl-org">StudentWaive Club · Lovely Professional University</div>
+        <ul class="tl-list">
+          <li>Organized 2+ tech events mentoring 100+ students on LLM integration and AI projects</li>
+          <li>Managed budgeting and logistics for club events ensuring smooth operations</li>
+        </ul>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025</div>
+        <div class="tl-role">Hackathon Captain</div>
+        <div class="tl-org">Amazon AWS Club · Lovely Professional University</div>
+        <ul class="tl-list">
+          <li>Led team from ideation to prototype at AWS Hackathon</li>
+          <li>Guided peers on cloud-native architecture and AWS services</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EDUCATION ══ -->
+<section id="education">
+  <div class="si">
+    <div class="sec-label">Where I Studied</div>
+    <h2 class="sec-title rv"><span class="grad">Education</span></h2>
+    <div class="edu-grid">
+      <div class="edu-card rv">
+        <div class="edu-deg">B.Tech in Computer Science &amp; Engineering</div>
+        <div class="edu-school">Lovely Professional University, Punjab</div>
+        <div class="edu-period">Jun 2024 – May 2028 · Minor in Generative AI</div>
+        <span class="edu-badge">CGPA: 7.85 / 10</span>
+      </div>
+      <div class="edu-card rv">
+        <div class="edu-deg">Intermediate — MPC</div>
+        <div class="edu-school">Narayana Junior College, Andhra Pradesh</div>
+        <div class="edu-period">May 2022 – May 2024</div>
+        <span class="edu-badge">Score: 71.4%</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AWARDS ══ -->
+<section id="awards" class="alt-bg">
+  <div class="si">
+    <div class="sec-label">Recognition</div>
+    <h2 class="sec-title rv">Awards &amp; <span class="grad">Honors</span></h2>
+    <div class="aw-grid">
+      <div class="aw-card rv"><div class="aw-ico">🥇</div><div><div class="aw-title">IIT Jodhpur Hackathon</div><div class="aw-desc">Winner at IIT Jodhpur inter-college hackathon — built and presented an innovative tech solution</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">🥇</div><div><div class="aw-title">IIT Ropar Hackathon</div><div class="aw-desc">Winner at IIT Ropar hackathon — competed and won against participants from top engineering colleges</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">🏅</div><div><div class="aw-title">College Hackathon Winner</div><div class="aw-desc">First place at LPU college-level hackathon — led team from ideation to working prototype</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">🏆</div><div><div class="aw-title">ByteXL Hackathon — Top 10</div><div class="aw-desc">Ranked in Top 10 — solved OneCompiler challenge by developing an LLM-powered web navigator</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">🚀</div><div><div class="aw-title">AWS Hackathon Captain</div><div class="aw-desc">Led team as captain under Amazon AWS Club from ideation to prototype</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">☁️</div><div><div class="aw-title">Microsoft Certified: AI-900</div><div class="aw-desc">Azure AI Fundamentals — certified by Microsoft</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">📊</div><div><div class="aw-title">Microsoft Certified: DP-900</div><div class="aw-desc">Azure Data Fundamentals — core data concepts & cloud data services certified by Microsoft</div></div></div>
+      <div class="aw-card rv"><div class="aw-ico">🤖</div><div><div class="aw-title">Microsoft AI Associate Engineer</div><div class="aw-desc">Certified AI Associate Engineer — validated skills in building and deploying AI/ML solutions</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="si">
+    <div class="sec-label">Get In Touch</div>
+    <div class="ct-inner">
+      <div>
+        <h2 class="sec-title rv">Let's Build <span class="grad">Together</span></h2>
+        <p class="ct-desc rv">Open to full-time roles, internships, freelance projects, and AI research collaborations. Have a problem to solve or an idea to build? Let's talk.</p>
+        <div class="ct-links rv">
+          <a href="mailto:kollipakulanikhil21@gmail.com" class="ctlink"><div class="ct-ico">📧</div><span>kollipakulanikhil21@gmail.com</span></a>
+          <a href="https://linkedin.com/in/kollipakulanikhil" target="_blank" class="ctlink"><div class="ct-ico">💼</div><span>linkedin.com/in/kollipakulanikhil</span></a>
+          <a href="https://github.com/KollipakulaNikhil" target="_blank" class="ctlink"><div class="ct-ico">🐙</div><span>github.com/KollipakulaNikhil</span></a>
+          <a href="tel:+919381675512" class="ctlink"><div class="ct-ico">📞</div><span>+91 9381675512</span></a>
         </div>
-        <div class="services-grid" data-reveal>
-          <div class="panel service">
-            <h3>Web Development</h3>
-            <p>Custom websites with clean architecture and performance focus.</p>
-          </div>
-          <div class="panel service">
-            <h3>Web Design</h3>
-            <p>Unique, Steam inspired UI with strong visual identity.</p>
-          </div>
-          <div class="panel service">
-            <h3>Responsive Design</h3>
-            <p>Pixel perfect layouts that work on every screen size.</p>
-          </div>
-        </div>
-      </section>
+      </div>
+      <div class="ct-box rv">
+        <h3>// quick.info</h3>
+        <div class="ct-row"><div class="ct-row-ico">📍</div><span class="ct-row-text">India — open to remote</span></div>
+        <div class="ct-row"><div class="ct-row-ico">🎓</div><span class="ct-row-text">LPU · CSE + Gen AI · 2028</span></div>
+        <div class="ct-row"><div class="ct-row-ico">⚡</div><span class="ct-row-text">Python · FastAPI · LangChain</span></div>
+        <div class="ct-row"><div class="ct-row-ico">🟢</div><span class="ct-row-text">Available now</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section id="contact" class="section">
-        <div class="section-head" data-reveal>
-          <h2>Contact</h2>
-          <p>Reach out for AI projects, Steam mods, or 3D product demos.</p>
-        </div>
-        <div class="contact-grid" data-reveal>
-          <div class="panel contact-panel">
-            <div class="contact-item">
-              <span>Email</span>
-              <strong>kollipakulanikhil21@gmail.com</strong>
-            </div>
-            <div class="contact-item">
-              <span>Phone</span>
-              <strong>+91 9381675512</strong>
-            </div>
-            <div class="contact-item">
-              <span>Location</span>
-              <strong>Vijayawada</strong>
-            </div>
-            <div class="contact-actions">
-              <a class="btn" href="mailto:kollipakulanikhil21@gmail.com">Email Me</a>
-              <a
-                class="btn ghost"
-                href="https://steamcommunity.com/id/yourhandle"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Steam Profile
-              </a>
-            </div>
+<footer><p>Crafted with <span>♥</span> by <span>Kollipakula Nikhil</span> · <span>2026</span></p></footer>
+
+<script>
+/* ══════════════════════════════════════
+   INTRO — code rain + glitch + progress
+══════════════════════════════════════ */
+(function(){
+  document.body.style.overflow='hidden';
+  const intro=document.getElementById('intro');
+  const rain=document.getElementById('i-rain');
+  const ctx=rain.getContext('2d');
+  const fill=document.getElementById('i-fill');
+  const pctEl=document.getElementById('i-pct');
+  const statEl=document.getElementById('i-status');
+
+  function resize(){rain.width=innerWidth;rain.height=innerHeight;}
+  resize();
+  window.addEventListener('resize',resize);
+
+  const CHARS='01アイウエABCDEFGHIJK<>{}[]()=+*@#PYTHON AI LANGCHAIN FASTAPI';
+  const FS=13;
+  let drops=[];
+  function initDrops(){drops=Array(Math.floor(rain.width/FS)).fill(0).map(()=>Math.random()*rain.height/FS);}
+  initDrops();
+
+  function drawRain(){
+    ctx.fillStyle='rgba(0,0,0,.055)';
+    ctx.fillRect(0,0,rain.width,rain.height);
+    const cols=Math.floor(rain.width/FS);
+    while(drops.length<cols)drops.push(0);
+    for(let i=0;i<cols;i++){
+      ctx.globalAlpha=Math.random()*.5+.08;
+      ctx.fillStyle=i%4===0?'#8b5cf6':'#06b6d4';
+      ctx.font=FS+'px JetBrains Mono,monospace';
+      ctx.fillText(CHARS[Math.floor(Math.random()*CHARS.length)],i*FS,drops[i]*FS);
+      if(drops[i]*FS>rain.height&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    }
+    ctx.globalAlpha=1;
+  }
+  const rainId=setInterval(drawRain,45);
+
+  const MSGS=['LOADING ASSETS...','INIT AI ENGINE...','COMPILING PROJECTS...','CALIBRATING 3D...','SYSTEM READY ✓'];
+  let pct=0,lastIdx=-1;
+  const progId=setInterval(()=>{
+    pct+=Math.random()*2+.5;
+    if(pct>100)pct=100;
+    fill.style.width=pct+'%';
+    pctEl.textContent=Math.floor(pct)+'%';
+    const idx=Math.min(Math.floor(pct/22),MSGS.length-1);
+    if(idx!==lastIdx){lastIdx=idx;statEl.textContent=MSGS[idx];}
+    if(pct>=100){clearInterval(progId);setTimeout(exit,520);}
+  },28);
+
+  function exit(){
+    clearInterval(rainId);
+    intro.classList.add('exit');
+    setTimeout(()=>{intro.style.display='none';document.body.style.overflow='';},800);
+  }
+  document.getElementById('i-skip').addEventListener('click',()=>{clearInterval(progId);clearInterval(rainId);exit();});
+})();
+
+/* ══════════════════════════════════════
+   THREE.JS — Coloured Neural BG
+══════════════════════════════════════ */
+(function(){
+  const canvas=document.getElementById('bg-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setClearColor(0x000000,0);
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+  cam.position.z=22;
+
+  const N=120;
+  const pos=new Float32Array(N*3);
+  const col=new Float32Array(N*3);
+  const vel=[];
+  const PAL=[[6,182,212],[139,92,246],[16,185,129]];
+  for(let i=0;i<N;i++){
+    pos[i*3]=(Math.random()-.5)*42;
+    pos[i*3+1]=(Math.random()-.5)*32;
+    pos[i*3+2]=(Math.random()-.5)*8;
+    vel.push((Math.random()-.5)*.017,(Math.random()-.5)*.017);
+    const p=PAL[Math.floor(Math.random()*3)];
+    col[i*3]=p[0]/255;col[i*3+1]=p[1]/255;col[i*3+2]=p[2]/255;
+  }
+  const ptG=new THREE.BufferGeometry();
+  ptG.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  ptG.setAttribute('color',new THREE.BufferAttribute(col,3));
+  scene.add(new THREE.Points(ptG,new THREE.PointsMaterial({size:.11,vertexColors:true,transparent:true,opacity:.8})));
+
+  const ML=N*8,lPos=new Float32Array(ML*2*3);
+  const lG=new THREE.BufferGeometry();
+  const lA=new THREE.BufferAttribute(lPos,3);
+  lA.setUsage(THREE.DynamicDrawUsage);
+  lG.setAttribute('position',lA);
+  scene.add(new THREE.LineSegments(lG,new THREE.LineBasicMaterial({color:0x06b6d4,transparent:true,opacity:.1})));
+
+  let mx=0,my=0,fr=0;
+  document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2.5;my=-(e.clientY/innerHeight-.5)*2.5;});
+  (function loop(){
+    requestAnimationFrame(loop);fr++;
+    for(let i=0;i<N;i++){
+      pos[i*3]+=vel[i*2];pos[i*3+1]+=vel[i*2+1];
+      if(pos[i*3]>21)pos[i*3]=-21;if(pos[i*3]<-21)pos[i*3]=21;
+      if(pos[i*3+1]>16)pos[i*3+1]=-16;if(pos[i*3+1]<-16)pos[i*3+1]=16;
+    }
+    ptG.attributes.position.needsUpdate=true;
+    if(fr%2===0){
+      let li=0;
+      for(let i=0;i<N&&li<ML*2-2;i++)for(let j=i+1;j<N&&li<ML*2-2;j++){
+        const dx=pos[i*3]-pos[j*3],dy=pos[i*3+1]-pos[j*3+1];
+        if(dx*dx+dy*dy<49){
+          lPos[li*3]=pos[i*3];lPos[li*3+1]=pos[i*3+1];lPos[li*3+2]=pos[i*3+2];li++;
+          lPos[li*3]=pos[j*3];lPos[li*3+1]=pos[j*3+1];lPos[li*3+2]=pos[j*3+2];li++;
+        }
+      }
+      lA.needsUpdate=true;lG.setDrawRange(0,li);
+    }
+    cam.position.x+=(mx-cam.position.x)*.025;
+    cam.position.y+=(my-cam.position.y)*.025;
+    cam.lookAt(scene.position);
+    renderer.render(scene,cam);
+  })();
+  window.addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+})();
+
+/* ══════════════════════════════════════
+   THREE.JS — Hero 3D Object
+══════════════════════════════════════ */
+(function(){
+  const canvas=document.getElementById('hero3d');
+  const S=380;
+  canvas.width=S;canvas.height=S;
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setSize(S,S);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(60,1,.1,100);
+  cam.position.z=4.5;
+
+  /* torus knot */
+  const tkG=new THREE.TorusKnotGeometry(1,.3,160,20);
+  const tk=new THREE.Mesh(tkG,new THREE.MeshPhongMaterial({color:0x06b6d4,emissive:0x041520,specular:0x8b5cf6,shininess:90,transparent:true,opacity:.93}));
+  scene.add(tk);
+  const wf=new THREE.Mesh(tkG,new THREE.MeshBasicMaterial({color:0x8b5cf6,wireframe:true,transparent:true,opacity:.1}));
+  scene.add(wf);
+
+  /* outer icosphere points — stored so animation loop can reference it */
+  const pts=new THREE.Points(
+    new THREE.IcosahedronGeometry(2.3,2),
+    new THREE.PointsMaterial({color:0x8b5cf6,size:.055,transparent:true,opacity:.5})
+  );
+  scene.add(pts);
+
+  /* rings */
+  const ring1=new THREE.Mesh(
+    new THREE.TorusGeometry(2,.003,16,100),
+    new THREE.MeshBasicMaterial({color:0x10b981,transparent:true,opacity:.5})
+  );
+  ring1.rotation.x=Math.PI/3;
+  scene.add(ring1);
+
+  const ring2=new THREE.Mesh(
+    new THREE.TorusGeometry(1.7,.003,16,80),
+    new THREE.MeshBasicMaterial({color:0x06b6d4,transparent:true,opacity:.45})
+  );
+  ring2.rotation.x=Math.PI/5;
+  ring2.rotation.y=Math.PI/4;
+  scene.add(ring2);
+
+  /* orbiting spheres */
+  const orbs=[0x06b6d4,0x8b5cf6,0x10b981,0xf59e0b].map((c,i)=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.1,12,12),new THREE.MeshBasicMaterial({color:c}));
+    scene.add(m);
+    return{mesh:m,angle:(Math.PI*2/4)*i,r:2.35+i*.12,spd:.44+i*.11,tilt:i*.22};
+  });
+
+  /* lights — use .position.set() not Object.assign (would corrupt the Vector3) */
+  scene.add(new THREE.AmbientLight(0x050a15,3));
+  const pl1=new THREE.PointLight(0x06b6d4,6,20);
+  pl1.position.set(3,3,3);
+  scene.add(pl1);
+  const pl2=new THREE.PointLight(0x8b5cf6,4,20);
+  pl2.position.set(-3,-2,2);
+  scene.add(pl2);
+  const pl3=new THREE.PointLight(0x10b981,2,15);
+  pl3.position.set(0,-3,-2);
+  scene.add(pl3);
+
+  let trx=0,try_=0;
+  document.addEventListener('mousemove',e=>{trx=-(e.clientY/innerHeight-.5)*.9;try_=(e.clientX/innerWidth-.5)*.9;});
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    const t=Date.now()*.001;
+    tk.rotation.x+=(trx-tk.rotation.x)*.04;
+    tk.rotation.y+=.007+(try_-tk.rotation.y)*.04;
+    wf.rotation.copy(tk.rotation);
+    pts.rotation.y=t*.13;
+    pts.rotation.x=t*.07;
+    ring1.rotation.z=t*.24;
+    ring2.rotation.y=t*.28;
+    ring2.rotation.z=-t*.14;
+    pl1.position.x=Math.sin(t*.7)*3.5;
+    pl1.position.y=Math.cos(t*.5)*3;
+    orbs.forEach(o=>{
+      o.angle+=o.spd*.012;
+      o.mesh.position.set(Math.cos(o.angle)*o.r,Math.sin(o.angle+o.tilt)*1.1,Math.sin(o.angle)*o.r*.5);
+    });
+    renderer.render(scene,cam);
+  })();
+})();
+
+/* ══════════════════════════════════════
+   CURSOR
+══════════════════════════════════════ */
+const curEl=document.getElementById('cur'),ringEl=document.getElementById('cur-ring');
+let cx=0,cy=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;curEl.style.left=cx+'px';curEl.style.top=cy+'px';});
+(function loop(){rx+=(cx-rx)*.12;ry+=(cy-ry)*.12;ringEl.style.left=rx+'px';ringEl.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.proj-flip,.sk-card,.aw-card,.dn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
+});
+
+/* ══════════════════════════════════════
+   CLICK PARTICLE BURST
+══════════════════════════════════════ */
+(function(){
+  const c=document.getElementById('click-canvas'),ctx=c.getContext('2d');
+  function rs(){c.width=innerWidth;c.height=innerHeight;}rs();
+  window.addEventListener('resize',rs);
+  const parts=[];
+  const COLS=['#06b6d4','#8b5cf6','#10b981','#f59e0b','#fff'];
+  document.addEventListener('click',e=>{
+    for(let i=0;i<22;i++){
+      const a=Math.random()*Math.PI*2,s=Math.random()*5+2;
+      parts.push({x:e.clientX,y:e.clientY,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:Math.random()*3.5+1.2,c:COLS[Math.floor(Math.random()*COLS.length)],life:1,decay:Math.random()*.03+.018});
+    }
+  });
+  (function loop(){
+    requestAnimationFrame(loop);
+    ctx.clearRect(0,0,c.width,c.height);
+    for(let i=parts.length-1;i>=0;i--){
+      const p=parts[i];
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.14;p.life-=p.decay;p.vx*=.97;p.vy*=.97;
+      if(p.life<=0){parts.splice(i,1);continue;}
+      ctx.globalAlpha=p.life;ctx.fillStyle=p.c;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  })();
+})();
+
+/* ══════════════════════════════════════
+   MAGNETIC BUTTONS
+══════════════════════════════════════ */
+document.querySelectorAll('.mag').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    btn.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.22}px,${(e.clientY-(r.top+r.height/2))*.22}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>btn.style.transform='');
+});
+
+/* ══════════════════════════════════════
+   SCROLL BAR + NAV SOLID
+══════════════════════════════════════ */
+window.addEventListener('scroll',()=>{
+  document.getElementById('scroll-bar').style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('solid',scrollY>60);
+});
+
+/* ══════════════════════════════════════
+   TYPEWRITER
+══════════════════════════════════════ */
+const phrases=['AI-powered apps','Generative AI systems','intelligent automation','fullstack web apps','LLM integrations','scalable APIs'];
+let pi=0,ci=0,dl=false;
+const tyEl=document.getElementById('ty');
+function type(){
+  const w=phrases[pi];if(dl)ci--;else ci++;
+  tyEl.textContent=w.slice(0,ci);
+  let d=dl?48:95;
+  if(!dl&&ci===w.length){d=1900;dl=true;}
+  else if(dl&&ci===0){dl=false;pi=(pi+1)%phrases.length;d=280;}
+  setTimeout(type,d);
+}
+setTimeout(type,1200);
+
+/* ══════════════════════════════════════
+   REVEAL ON SCROLL
+══════════════════════════════════════ */
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');}),{threshold:.1});
+document.querySelectorAll('.rv,.tl-item').forEach(el=>obs.observe(el));
+
+/* ══════════════════════════════════════
+   COUNTER
+══════════════════════════════════════ */
+const statsEl=document.getElementById('hs');let counted=false;
+new IntersectionObserver(e=>{
+  if(e[0].isIntersecting&&!counted){counted=true;
+    document.querySelectorAll('.s-num').forEach(el=>{
+      const t=+el.dataset.t;let c=0;const st=t/55;
+      const iv=setInterval(()=>{c+=st;if(c>=t){el.textContent=t+'+';clearInterval(iv);}else el.textContent=Math.floor(c)+'+';},16);
+    });
+  }
+},{threshold:.5}).observe(statsEl);
+
+/* ══════════════════════════════════════
+   GSAP HERO ENTRY
+══════════════════════════════════════ */
+gsap.registerPlugin(ScrollTrigger);
+gsap.timeline({delay:.3})
+  .to('#hb',{opacity:1,duration:.55,ease:'power2.out'})
+  .to('#hn',{opacity:1,y:0,duration:.65,ease:'power2.out'},'-=.2')
+  .to('#tw',{opacity:1,duration:.5,ease:'power2.out'},'-=.35')
+  .to('#hd',{opacity:1,y:0,duration:.55,ease:'power2.out'},'-=.3')
+  .to('#hc',{opacity:1,y:0,duration:.5,ease:'power2.out'},'-=.3')
+  .to('#hs',{opacity:1,duration:.5,ease:'power2.out'},'-=.3')
+  .to('#hv',{opacity:1,duration:.9,ease:'power2.out'},'-=.4');
+
+/* ══════════════════════════════════════
+   3D TILT — Skill cards
+══════════════════════════════════════ */
+document.querySelectorAll('.sk-card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    c.style.transform=`perspective(700px) rotateX(${-(y-r.height/2)/20}deg) rotateY(${(x-r.width/2)/20}deg) translateY(-4px)`;
+  });
+  c.addEventListener('mouseleave',()=>c.style.transform='');
+});
+
+/* ══════════════════════════════════════
+   RADIAL GLOW — Project fronts
+══════════════════════════════════════ */
+document.querySelectorAll('.proj-front').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--px',((e.clientX-r.left)/r.width*100)+'%');
+    c.style.setProperty('--py',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
+
+/* ══════════════════════════════════════
+   DOT NAV
+══════════════════════════════════════ */
+const dnAll=document.querySelectorAll('.dn');
+dnAll.forEach(d=>d.addEventListener('click',()=>{
+  const el=document.getElementById(d.dataset.target);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}));
+const allSec=document.querySelectorAll('section[id]');
+function updateDots(){
+  let active='hero';
+  allSec.forEach(s=>{if(scrollY>=s.offsetTop-180)active=s.id;});
+  dnAll.forEach(d=>d.classList.toggle('active',d.dataset.target===active));
+}
+window.addEventListener('scroll',updateDots);
+
+/* ══════════════════════════════════════
+   ACTIVE NAV LINKS
+══════════════════════════════════════ */
+const navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  allSec.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+  navLinks.forEach(a=>a.style.color=a.getAttribute('href')==='#'+cur?'var(--cyan)':'');
+});
+
+/* ══════════════════════════════════════
+   CHATBOT — self-contained KB
+══════════════════════════════════════ */
+(function(){
+  const toggle   = document.getElementById('cb-toggle');
+  const win      = document.getElementById('cb-window');
+  const msgs     = document.getElementById('cb-msgs');
+  const inp      = document.getElementById('cb-inp');
+  const sendBtn  = document.getElementById('cb-send');
+  const closeBtn = document.getElementById('cb-x');
+  const badge    = document.getElementById('cb-badge');
+  const sugs     = document.querySelectorAll('.cbs');
+
+  /* ── Knowledge base ── */
+  const KB = [
+    {
+      keys:[/\b(hi|hello|hey|hii|yo|sup)\b/],
+      ans:"Hi there! 👋 I'm Nikhil's assistant. Ask me about his skills, projects, certifications, experience, or how to hire him!"
+    },
+    {
+      keys:[/who|about|introduce|yourself|tell me about/],
+      ans:"I'm Kollipakula Nikhil — a Fullstack Developer & Generative AI Engineer from India 🇮🇳\n\nI'm pursuing B.Tech CSE at LPU (2024–28) with a Minor in Generative AI. I build intelligent, scalable systems using LangChain, FastAPI, and React. I've won hackathons at IIT Jodhpur & IIT Ropar and hold multiple Microsoft certifications!"
+    },
+    {
+      keys:[/hire|recruit|opportunit|freelanc|open to|looking for|position/],
+      ans:"Yes! Nikhil is actively open to:\n\n✅ Full-time Developer / AI Engineer roles\n✅ Internships (AI, Fullstack, Cloud)\n✅ Freelance projects\n✅ AI Research collaborations\n\n📍 India — open to remote work globally 🌍\n📧 kollipakulanikhil21@gmail.com"
+    },
+    {
+      keys:[/contact|email|reach|phone|call|message|social|connect/],
+      ans:"Reach Nikhil at:\n\n📧 kollipakulanikhil21@gmail.com\n💼 linkedin.com/in/kollipakulanikhil\n🐙 github.com/KollipakulaNikhil\n📞 +91 9381675512"
+    },
+    {
+      keys:[/linkedin/],
+      ans:"Connect with Nikhil on LinkedIn:\n💼 linkedin.com/in/kollipakulanikhil\n\nHe posts about AI projects, certifications, and dev insights!"
+    },
+    {
+      keys:[/github|repo|source|open.source/],
+      ans:"Nikhil's GitHub:\n🐙 github.com/KollipakulaNikhil\n\nHe builds AI tools, web apps, automation scripts, and hardware projects!"
+    },
+    {
+      keys:[/skill|stack|tech|language|framework|expert|tool|know/],
+      ans:"Nikhil's full stack:\n\n🐍 Languages: Python, JavaScript, C++, Java, SQL, HTML, CSS\n🚀 Frameworks: FastAPI, Flask, React.js, Tailwind CSS, Git\n🤖 AI/ML: LangChain, Ollama, NLP, Playwright, Selenium, Puppeteer\n☁️ Cloud & DevOps: Microsoft Azure, CI/CD, Docker, Autoscaling\n📊 Data: NumPy, pandas, Matplotlib"
+    },
+    {
+      keys:[/moon.?phase|moon/],
+      ans:"MoonPhase Explorer 🌙\n\nReal-time moon phase calculator with AI-generated visuals. Deployed on Azure with Docker, rolling updates, CI/CD pipelines, and autoscaling.\n\nStack: JavaScript, Azure, Docker, CI/CD, Canvas API\n🔗 kollipakulanikhil.github.io/moon-phase-tracker/"
+    },
+    {
+      keys:[/text.?to.?voice|tts|voice|speech|audio|multilingual/],
+      ans:"Text-To-Voice AI Generator 🎙️\n\nAI-powered TTS engine supporting 10 languages — 5 Indian (Hindi, Telugu, Tamil, Kannada, Malayalam) + 5 international. Converts text to natural, expressive speech.\n\nStack: Python, gTTS, pyttsx3, Flask\n🔗 kollipakulanikhil.github.io/Text-To-Voice-AI-Generator/"
+    },
+    {
+      keys:[/text.?to.?ppt|ppt|powerpoint|slide|presentation/],
+      ans:"Text-to-PPT Generator 📊\n\nAI tool that converts unstructured text into structured PowerPoint slides. Uses NLP models to parse content hierarchy and automate slide generation end-to-end.\n\nStack: Python, NLP, Generative AI, Automation"
+    },
+    {
+      keys:[/arduino|robot|obstacle|hardware|embedded|sensor/],
+      ans:"Arduino Obstacle Avoider Robot 🤖\n\nAutonomous robot using HC-SR04 ultrasonic sensors for real-time obstacle detection and avoidance. Designed the hardware circuit and programmed firmware from scratch.\n\nStack: Arduino C++, HC-SR04, L298N motor driver, PWM, Embedded Systems"
+    },
+    {
+      keys:[/project|built|build|app|create|made/],
+      ans:"Nikhil's featured projects:\n\n1️⃣ Text-to-PPT Generator — Python + NLP (AI slide creation)\n2️⃣ MoonPhase Explorer — JS + Azure + Docker (live site)\n3️⃣ Text-To-Voice AI — Python + gTTS + Flask (10 languages, live)\n4️⃣ Arduino Obstacle Avoider — C++ + Hardware (robotics)\n\nScroll to the Projects section to explore each one!"
+    },
+    {
+      keys:[/iit|jodhpur|ropar|bytexl|award|achiev|win|certif|ai.?900|dp.?900|associate|honor|recognition/],
+      ans:"Achievements & Certifications:\n\n🥇 IIT Jodhpur Hackathon — Winner\n🥇 IIT Ropar Hackathon — Winner\n🏅 LPU College Hackathon — 1st Place\n🏆 ByteXL Hackathon — Top 10 (LLM-powered web navigator)\n🚀 AWS Hackathon Captain\n☁️ Microsoft AI-900 (Azure AI Fundamentals)\n📊 Microsoft DP-900 (Azure Data Fundamentals)\n🤖 Microsoft AI Associate Engineer"
+    },
+    {
+      keys:[/educat|college|university|degree|lpu|lovely|cgpa|gpa|study|school|narayana/],
+      ans:"Education:\n\n🎓 B.Tech — Computer Science & Engineering\nLovely Professional University, Punjab\n2024–2028 · Minor in Generative AI · CGPA: 7.85/10\n\n📚 Intermediate MPC\nNarayana Junior College, Andhra Pradesh\n2022–2024 · Score: 71.4%"
+    },
+    {
+      keys:[/experience|role|club|treasurer|captain|studentwaive|intern|work history/],
+      ans:"Experience:\n\n🏛️ Treasurer — StudentWaive Club, LPU (Jan 2025–Present)\n→ Organised 2+ tech events\n→ Mentored 100+ students on LLM integration & AI projects\n→ Managed club finances & event logistics\n\n🚀 Hackathon Captain — Amazon AWS Club, LPU (2025)\n→ Led team from ideation to working prototype\n→ Coordinated sprint planning & final presentation"
+    },
+    {
+      keys:[/ai|langchain|llm|genai|gen.?ai|ollama|machine.?learn|nlp|generative|automation/],
+      ans:"AI is Nikhil's core expertise! 🤖\n\n• LangChain — advanced LLM pipelines & agents\n• Generative AI — text, speech, slide generation\n• NLP — language understanding & processing\n• Ollama — deploying local LLMs\n• Azure AI Services — cloud AI deployment\n• Playwright / Selenium — AI-driven automation\n\nHe's also pursuing a university Minor in Generative AI!"
+    },
+    {
+      keys:[/location|india|remote|where|country|city|place|relocat/],
+      ans:"Nikhil is based in India 🇮🇳 (LPU, Punjab) and is fully open to remote work globally or relocation for the right opportunity."
+    },
+    {
+      keys:[/age|year|old|born|student/],
+      ans:"Nikhil started B.Tech in 2024 — he's a driven early-career engineer already shipping AI tools and winning IIT-level hackathons! 🚀"
+    },
+    {
+      keys:[/hobby|interest|passion|free.?time|like|love|enjoy/],
+      ans:"Nikhil's passions:\n\n🤖 Building AI-powered tools & apps\n🏆 Competing in hackathons\n🎓 Mentoring students on LLMs & AI\n🔭 Space & astronomy (built MoonPhase Explorer for fun!)\n📡 Embedded systems & robotics\n⚡ Exploring new LLM frameworks"
+    }
+  ];
+
+  function getReply(q){
+    const ql = q.toLowerCase().trim();
+    for(const entry of KB){
+      if(entry.keys.some(re => re.test(ql))) return entry.ans;
+    }
+    return "I'm not sure about that — but you can reach Nikhil directly at:\n📧 kollipakulanikhil21@gmail.com\n\nOr ask me about his skills, projects, experience, or how to hire him! 😊";
+  }
+
+  /* ── UI helpers ── */
+  function addMsg(text, role){
+    const d = document.createElement('div');
+    d.className = 'cbm ' + (role === 'user' ? 'usr' : 'bot');
+    d.style.whiteSpace = 'pre-wrap';
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTyping(){
+    const t = document.createElement('div');
+    t.className = 'cb-typing';
+    t.innerHTML = '<div class="cbd"></div><div class="cbd"></div><div class="cbd"></div>';
+    msgs.appendChild(t);
+    msgs.scrollTop = msgs.scrollHeight;
+    return t;
+  }
+
+  function send(q){
+    q = q.trim();
+    if(!q) return;
+    addMsg(q, 'user');
+    inp.value = '';
+    const reply = getReply(q);
+    const typ = showTyping();
+    setTimeout(()=>{ typ.remove(); addMsg(reply, 'bot'); }, 500 + Math.min(reply.length * 4, 800));
+  }
+
+  /* ── Events ── */
+  toggle.addEventListener('click', ()=>{
+    const isOpen = win.classList.toggle('open');
+    if(isOpen){
+      badge.style.display = 'none';
+      if(msgs.children.length === 0)
+        addMsg("Hi! I'm Nikhil's assistant 👋 Ask me about his skills, projects, certifications, or how to hire him!", 'bot');
+      setTimeout(()=>inp.focus(), 320);
+    }
+  });
+
+  closeBtn.addEventListener('click', ()=> win.classList.remove('open'));
+  sendBtn.addEventListener('click',  ()=> send(inp.value));
+  inp.addEventListener('keydown', e=>{ if(e.key === 'Enter' && !e.shiftKey) send(inp.value); });
+  sugs.forEach(s => s.addEventListener('click', ()=> send(s.textContent)));
+})();
+
+/* ══════════════════════════════════════
+   GITHUB REPOS — dynamic fetch
+══════════════════════════════════════ */
+(function(){
+  const LANG_COLORS={Python:'#3572a5',JavaScript:'#f1e05a',HTML:'#e34c26',CSS:'#563d7c','C++':'#f34b7d',Java:'#b07219',TypeScript:'#3178c6',Shell:'#89e051',Jupyter:'#da5b0b',Arduino:'#00979d'};
+  const SKIP=['KollipakulaNikhil','portfolio'];
+
+  fetch('https://api.github.com/users/KollipakulaNikhil/repos?sort=updated&per_page=30')
+    .then(r=>{if(!r.ok)throw new Error();return r.json();})
+    .then(repos=>{
+      const grid=document.getElementById('gh-grid');
+      const useful=repos.filter(r=>!r.fork&&!SKIP.some(s=>r.name.toLowerCase().includes(s.toLowerCase())));
+      grid.innerHTML='';
+      if(!useful.length){grid.innerHTML='<p style="font-family:var(--mono);font-size:.75rem;color:var(--muted)">No public repos found.</p>';return;}
+
+      useful.forEach(repo=>{
+        const color=LANG_COLORS[repo.language]||'#8b5cf6';
+        const desc=repo.description||'Explore this repository on GitHub.';
+        const card=document.createElement('div');
+        card.className='gh-card rv';
+        card.innerHTML=`
+          <div class="gh-lang">
+            <span class="gh-dot" style="background:${color}"></span>
+            ${repo.language||'Code'}
           </div>
-          <form class="panel contact-form">
-            <label>
-              Name
-              <input type="text" name="name" placeholder="Your name" required />
-            </label>
-            <label>
-              Email
-              <input type="email" name="email" placeholder="you@email.com" required />
-            </label>
-            <label>
-              Message
-              <textarea
-                name="message"
-                rows="5"
-                placeholder="Tell me about your idea"
-                required
-              ></textarea>
-            </label>
-            <button class="btn" type="submit">Send Message</button>
-          </form>
-        </div>
-      </section>
-    </main>
+          <div class="gh-rname">${repo.name.replace(/-/g,' ')}</div>
+          <div class="gh-rdesc">${desc}</div>
+          <div class="gh-foot">
+            <a href="${repo.html_url}" target="_blank" rel="noopener" class="gh-lnk">GitHub ↗</a>
+            ${repo.homepage?`<a href="${repo.homepage}" target="_blank" rel="noopener" class="gh-lnk">Live ↗</a>`:''}
+            ${repo.stargazers_count>0?`<span class="gh-star">⭐ ${repo.stargazers_count}</span>`:''}
+          </div>`;
+        grid.appendChild(card);
+        /* register for scroll reveal */
+        obs.observe(card);
+      });
+    })
+    .catch(()=>{
+      const g=document.getElementById('gh-grid');
+      if(g) g.innerHTML='<p style="font-family:var(--mono);font-size:.72rem;color:var(--muted);opacity:.5">Could not load GitHub repos right now.</p>';
+    });
+})();
 
-    <footer class="footer">
-      <p>Steam inspired 3D portfolio for Kollipakula Nikhil.</p>
-    </footer>
+/* ══════════════════════════════════════
+   AVATAR WIDGET
+══════════════════════════════════════ */
+(function(){
+  const widget   = document.getElementById('av-widget');
+  const textEl   = document.getElementById('av-text');
+  const mouth    = document.getElementById('av-mouth');
+  const replayBtn= document.getElementById('av-replay');
+  const closeBtn = document.getElementById('av-close');
+  const charEl   = document.getElementById('av-char');
 
-    <noscript>
-      <div class="noscript">Enable JavaScript to see the 3D background.</div>
-    </noscript>
+  const SCRIPT = [
+    "Hi! I'm Nikhil 👋",
+    "Fullstack Dev &\nGenerative AI Engineer.",
+    "I build with LangChain,\nFastAPI & React ⚡",
+    "IIT Jodhpur & Ropar Hackathon Winner 🥇\nTop 10 @ ByteXL · AI-900 & DP-900 Certified ☁️",
+    "Mentored 100+ students\non LLM & AI projects 🎓",
+    "Open to roles & collabs —\nscroll down to see my work! 🚀"
+  ];
 
-    <script type="module" src="script.js"></script>
-  </body>
+  let speaking=false, stopFlag=false, mouthTimer=null;
+
+  function startMouth(){
+    mouthTimer=setInterval(()=>{
+      const h=Math.random()>.45?8:3;
+      mouth.setAttribute('y', 49-h/2);
+      mouth.setAttribute('height', h);
+    },110);
+  }
+  function stopMouth(){
+    clearInterval(mouthTimer);
+    mouth.setAttribute('y','47');
+    mouth.setAttribute('height','5');
+  }
+
+  function pause(ms){return new Promise(r=>setTimeout(r,ms));}
+
+  async function speak(){
+    if(speaking){stopFlag=true;await pause(120);}
+    speaking=true; stopFlag=false;
+    textEl.textContent='';
+    startMouth();
+    for(let li=0;li<SCRIPT.length;li++){
+      if(stopFlag)break;
+      textEl.textContent='';
+      for(let i=0;i<SCRIPT[li].length;i++){
+        if(stopFlag)break;
+        textEl.textContent+=SCRIPT[li][i];
+        await pause(SCRIPT[li][i]==='\n'?180:42);
+      }
+      if(!stopFlag) await pause(li===SCRIPT.length-1?3500:1100);
+    }
+    stopMouth();
+    speaking=false;
+  }
+
+  /* auto-show once intro hides */
+  const introEl=document.getElementById('intro');
+  new MutationObserver((_,obs)=>{
+    if(introEl.style.display==='none'){
+      obs.disconnect();
+      setTimeout(()=>{widget.classList.add('show');speak();},1100);
+    }
+  }).observe(introEl,{attributes:true,attributeFilter:['style']});
+
+  replayBtn.addEventListener('click',()=>{stopFlag=true;stopMouth();setTimeout(speak,80);});
+  closeBtn.addEventListener('click',()=>{stopFlag=true;stopMouth();speaking=false;widget.classList.remove('show');});
+  charEl.addEventListener('click',()=>{
+    if(widget.classList.contains('show')){stopFlag=true;stopMouth();widget.classList.remove('show');}
+    else{widget.classList.add('show');speak();}
+  });
+})();
+</script>
+</body>
 </html>
-
-
-
-
